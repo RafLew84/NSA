@@ -24,6 +24,12 @@ from data.files.read_mpp import read_mpp_file
 from data.files.read_s94 import read_s94_file
 from data.files.read_stp import read_stp_file
 
+from data.data_for_analisys import (
+    data_for_analisys,
+    insert_data,
+    clear_data
+)
+
 class MainWindow:
     def __init__(self, root):
         """
@@ -92,8 +98,15 @@ class MainWindow:
     def open_file(self, filetype):
         file_types = [(f"{filetype.upper()} Files", f"*.{filetype}"), ("All Files", "*.*")]
         files_selected = filedialog.askopenfilenames(title=f"Open {filetype.upper()} File(s)", filetypes=file_types)
+        clear_data()
         for path in files_selected:
-            data = self.read_file(path, filetype)  
+            item = self.read_file(path, filetype)
+            insert_data(
+                file_ext=filetype,
+                item=item
+            )
+        print(len(data_for_analisys))
+
 
     def show_about(self):
         """
