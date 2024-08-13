@@ -94,6 +94,15 @@ class MainWindow:
         Handle the 'Select Folder' action for different file types.
         """
         folder_selected = filedialog.askdirectory(title=f"Select Folder for {filetype} files")
+        clear_data()
+        files = [os.path.join(folder_selected, f) for f in os.listdir(folder_selected) 
+                    if f.endswith(filetype.lower()) or f.endswith(filetype.upper())]
+        for path in files:
+            item = self.read_file(path, filetype)
+            insert_data(
+                file_ext=filetype,
+                item=item
+            )
 
     def open_file(self, filetype):
         file_types = [(f"{filetype.upper()} Files", f"*.{filetype}"), ("All Files", "*.*")]
@@ -105,7 +114,6 @@ class MainWindow:
                 file_ext=filetype,
                 item=item
             )
-        print(len(data_for_analisys))
 
 
     def show_about(self):
