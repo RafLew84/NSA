@@ -16,6 +16,9 @@ import tkinter as tk
 
 from tkinter import ttk
 
+from tkinterweb import HtmlFrame 
+import markdown
+
 class MainWindow:
     def __init__(self, root):
         """
@@ -78,7 +81,8 @@ class MainWindow:
         # About menu
         about_menu = tk.Menu(menu_bar, tearoff=0)
         about_menu.add_command(label="About", command=self.show_about)
-        menu_bar.add_cascade(label="About", menu=about_menu)
+        about_menu.add_command(label="Show Docs", command=self.show_docs)
+        menu_bar.add_cascade(label="Info", menu=about_menu)
 
         # Configure the menu bar
         self.root.config(menu=menu_bar)
@@ -108,3 +112,23 @@ class MainWindow:
         """
         pass
         # messagebox.showinfo("About NanoSurface Analyzer", "NanoSurface Analyzer v1.0\nDeveloped by Your Name")
+
+    def show_docs(self):
+        """
+        Display Markdown documentation in a new window.
+        """
+        # Create a new window for the documentation
+        docs_window = tk.Toplevel(self.root)
+        docs_window.title("Documentation")
+
+        # Create an HtmlFrame widget to display the HTML content
+        html_frame = HtmlFrame(docs_window)
+        html_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        with open("NSA/docs/docs.md", "r") as file:
+            md_content = file.read()
+
+        html_content = markdown.markdown(md_content)
+
+        # Load the HTML content into the HtmlFrame
+        html_frame.load_html(html_content)
