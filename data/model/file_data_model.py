@@ -12,6 +12,7 @@ sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 
 class FileDataModel:
     def __init__(self):
+        self._data_name = None
         self._file_name = None
         self._header_info = None
         self._frame_number = None
@@ -20,6 +21,10 @@ class FileDataModel:
         self._operations = []
 
     # Getters
+    @property
+    def data_name(self):
+        return self._data_name
+
     @property
     def file_name(self):
         return self._file_name
@@ -45,6 +50,10 @@ class FileDataModel:
         return self._operations
 
     # Setters
+    @data_name.setter
+    def data_name(self, value):
+        self._data_name = value
+
     @file_name.setter
     def file_name(self, value):
         self._file_name = value
