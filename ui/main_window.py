@@ -53,10 +53,24 @@ class MainWindow:
         """
         menu_bar = tk.Menu(self.root)
 
-        # File menu
+        # File menu with submenus
         file_menu = tk.Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Select Folder", command=self.select_folder)
-        file_menu.add_command(label="Open File", command=self.open_file)
+
+        # Submenu for Select Folder
+        select_folder_menu = tk.Menu(file_menu, tearoff=0)
+        select_folder_menu.add_command(label="mpp", command=lambda: self.select_folder('mpp'))
+        select_folder_menu.add_command(label="stp", command=lambda: self.select_folder('stp'))
+        select_folder_menu.add_command(label="s94", command=lambda: self.select_folder('s94'))
+        file_menu.add_cascade(label="Select Folder", menu=select_folder_menu)
+
+        # Submenu for Open File
+        open_file_menu = tk.Menu(file_menu, tearoff=0)
+        open_file_menu.add_command(label="mpp", command=lambda: self.open_file('mpp'))
+        open_file_menu.add_command(label="stp", command=lambda: self.open_file('stp'))
+        open_file_menu.add_command(label="s94", command=lambda: self.open_file('s94'))
+        file_menu.add_cascade(label="Open File", menu=open_file_menu)
+
+        # Close option
         file_menu.add_separator()
         file_menu.add_command(label="Close", command=self.root.quit)
         menu_bar.add_cascade(label="File", menu=file_menu)
@@ -69,23 +83,24 @@ class MainWindow:
         # Configure the menu bar
         self.root.config(menu=menu_bar)
 
-    def select_folder(self):
+    def select_folder(self, filetype):
         """
-        Handle the 'Select Folder' action.
+        Handle the 'Select Folder' action for different file types.
         """
         pass
-        # folder_selected = filedialog.askdirectory(title="Select Folder")
+        # folder_selected = filedialog.askdirectory(title=f"Select Folder for {filetype} files")
         # if folder_selected:
-        #     print(f"Selected folder: {folder_selected}")
+        #     print(f"Selected folder for {filetype} files: {folder_selected}")
 
-    def open_file(self):
+    def open_file(self, filetype):
         """
-        Handle the 'Open File' action.
+        Handle the 'Open File' action for different file types.
         """
         pass
-        # file_selected = filedialog.askopenfilename(title="Open File", filetypes=(("All Files", "*.*"),))
+        # file_types = [(f"{filetype.upper()} Files", f"*.{filetype}"), ("All Files", "*.*")]
+        # file_selected = filedialog.askopenfilename(title=f"Open {filetype.upper()} File", filetypes=file_types)
         # if file_selected:
-        #     print(f"Selected file: {file_selected}")
+        #     print(f"Selected {filetype.upper()} file: {file_selected}")
 
     def show_about(self):
         """
