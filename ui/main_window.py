@@ -15,9 +15,14 @@ sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 import tkinter as tk
 
 from tkinter import ttk
+from tkinter import filedialog, messagebox
 
 from tkinterweb import HtmlFrame 
 import markdown
+
+from data.files.read_mpp import read_mpp_file
+from data.files.read_s94 import read_s94_file
+from data.files.read_stp import read_stp_file
 
 class MainWindow:
     def __init__(self, root):
@@ -36,15 +41,6 @@ class MainWindow:
         # Create a notebook (tabbed interface)
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill=tk.BOTH, expand=True)
-
-
-
-        # self.load_data_tab = LoadDataTab(self.notebook, self)
-        # self.preprocessing_tab = PreprocessingTab(self.notebook, self)
-        # self.processing_tab = ProcessingTab(self.notebook, self)
-        # self.measurement_tab = SpotsMeasurementTab(self.notebook, self)
-        # self.spots_detection_tab = SpotsDetectionTab(self.notebook, self)
-        # self.noise_analisys_tab = NoiseAnalysisTab(self.notebook, self)
 
         # Configure grid row and column weights for rescaling
         self.root.grid_rowconfigure(0, weight=1)
@@ -71,7 +67,7 @@ class MainWindow:
         open_file_menu.add_command(label="mpp", command=lambda: self.open_file('mpp'))
         open_file_menu.add_command(label="stp", command=lambda: self.open_file('stp'))
         open_file_menu.add_command(label="s94", command=lambda: self.open_file('s94'))
-        file_menu.add_cascade(label="Open File", menu=open_file_menu)
+        file_menu.add_cascade(label="Open Files", menu=open_file_menu)
 
         # Close option
         file_menu.add_separator()
@@ -91,27 +87,19 @@ class MainWindow:
         """
         Handle the 'Select Folder' action for different file types.
         """
-        pass
-        # folder_selected = filedialog.askdirectory(title=f"Select Folder for {filetype} files")
-        # if folder_selected:
-        #     print(f"Selected folder for {filetype} files: {folder_selected}")
+        folder_selected = filedialog.askdirectory(title=f"Select Folder for {filetype} files")
 
     def open_file(self, filetype):
-        """
-        Handle the 'Open File' action for different file types.
-        """
-        pass
-        # file_types = [(f"{filetype.upper()} Files", f"*.{filetype}"), ("All Files", "*.*")]
-        # file_selected = filedialog.askopenfilename(title=f"Open {filetype.upper()} File", filetypes=file_types)
-        # if file_selected:
-        #     print(f"Selected {filetype.upper()} file: {file_selected}")
+        file_types = [(f"{filetype.upper()} Files", f"*.{filetype}"), ("All Files", "*.*")]
+        files_selected = filedialog.askopenfilenames(title=f"Open {filetype.upper()} File(s)", filetypes=file_types)
+        for path in files_selected:
+            data = self.read_file(path, filetype)  
 
     def show_about(self):
         """
         Show information about the application.
         """
-        pass
-        # messagebox.showinfo("About NanoSurface Analyzer", "NanoSurface Analyzer v1.0\nDeveloped by Your Name")
+        messagebox.showinfo("About NanoSurface Analyzer", "NanoSurface Analyzer v1.0\nDeveloped by Your Name")
 
     def show_docs(self):
         """
@@ -132,3 +120,12 @@ class MainWindow:
 
         # Load the HTML content into the HtmlFrame
         html_frame.load_html(html_content)
+
+    def read_file(self, file_path, file_type):
+        """Read the file based on its type."""
+        if file_type == "s94":
+            return read_s94_file(file_path)
+        elif file_type == "stp":
+            return read_stp_file(file_path)
+        elif file_type == "mpp":
+            return read_mpp_file(file_path)
