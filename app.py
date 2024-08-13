@@ -16,6 +16,8 @@ import tkinter as tk
 
 from tkinter import ttk
 
+from ui.main_window import MainWindow
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -37,3 +39,4 @@ class App:
         """
         self.root = root
         self.root.title("NanoSurface Analyzer")
+        MainWindow(self.root)
