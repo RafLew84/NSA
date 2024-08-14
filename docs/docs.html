@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NanoSurface Analyzer Documentation</title>
+</head>
+<body>
+    <h1>NanoSurface Analyzer Documentation</h1>
+
+    <p>Welcome to the <strong>NanoSurface Analyzer</strong> application! This documentation will guide you through the key features and usage instructions.</p>
+
+    <h2>Table of Contents</h2>
+    <ol>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li>
+            <a href="#usage">Usage</a>
+            <ul>
+                <li><a href="#file-read">File Read</a></li>
+                <li><a href="#preprocessing">Preprocessing</a></li>
+                <li><a href="#processing">Processing</a></li>
+                <li><a href="#measurement">Measurement</a></li>
+                <li><a href="#file-write">File Write</a></li>
+            </ul>
+        
+        </li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ol>
+
+    <h2 id="introduction">Introduction</h2>
+    <p>The NanoSurface Analyzer is a tool designed to help measure surface data at the nanoscale. The application supports <code>mpp</code>, <code>stp</code>, and <code>s94</code> file formats. It provides several processing and measurement methods.</p>
+
+    <h2 id="installation">Installation</h2>
+    <p>To install the NanoSurface Analyzer, follow these steps:</p>
+    <ol>
+        <li>Clone the repository:</li>
+        <pre><code>git clone https://github.com/yourusername/nanosurface-analyzer.git</code></pre>
+
+        <li>Navigate to the project directory:</li>
+        <pre><code>cd nanosurface-analyzer</code></pre>
+
+        <li>Install the required dependencies:</li>
+        <pre><code>pip install -r requirements.txt</code></pre>
+    </ol>
+
+    <h2 id="usage">Usage</h2>
+
+    <h3 id="file-read">File Reading</h3>
+    <p>The application supports the following file formats: <code>s94</code>, <code>stp (WSxM)</code>, and <code>mpp (WSxM)</code>. For <code>s94</code> and <code>stp</code> files, both header information and image data will be extracted. In the case of <code>mpp</code> files, data from each frame will be extracted individually.</p>
+    <p>Files can be read using one of the following methods:</p>
+    <ol>
+        <li><strong>Selected Folder:</strong>
+            <p>Reads all files of the chosen type within the selected folder.</p>
+        </li>
+        <li><strong>Open Files:</strong>
+            <p>Allows for the selection and reading of multiple files of the chosen type.</p>
+        </li>
+    </ol>
+
+    <h3 id="preprocessing">Preprocessing</h3>
+    <p>Steps to preprocess the surface data before analysis.</p>
+
+    <h3 id="processing">Processing</h3>
+    <p>Processing methods provided by the NanoSurface Analyzer.</p>
+
+    <h3 id="measurement">Measurement</h3>
+    <p>How to measure surface data using the NanoSurface Analyzer.</p>
+
+    <h3 id="file-write">File Write</h3>
+    <p>Instructions for saving the processed data back to a file.</p>
+
+    <h2 id="about">About</h2>
+    <p>The NanoSurface Analyzer is developed to assist in the analysis of nanoscale surface data. The tool is designed to be intuitive and powerful, enabling users to focus on their research rather than on data handling.</p>
+    <p><strong>Version:</strong> 1.0</p>
+
+    <h2 id="contact">Contact</h2>
+    <p>For any inquiries, suggestions, or feedback, please contact:</p>
+    <ul>
+        <li><strong>Email</strong>: yourname@example.com</li>
+        <li><strong>GitHub</strong>: <a href="https://github.com/yourusername/nanosurface-analyzer">https://github.com/yourusername/nanosurface-analyzer</a></li>
+    </ul>
+</body>
+</html>
