@@ -12,11 +12,7 @@ from data.files.read_mpp import read_mpp_file
 from data.files.read_s94 import read_s94_file
 from data.files.read_stp import read_stp_file
 
-from data.data_for_analisys import (
-    data_for_analisys,
-    insert_data,
-    clear_data
-)
+from data.data_manager import DataManager
 
 def create_menu(root):
     """
@@ -66,24 +62,26 @@ def select_folder(filetype):
     """
     Handle the 'Select Folder' action for different file types.
     """
+    data_manager = DataManager()
     folder_selected = filedialog.askdirectory(title=f"Select Folder for {filetype} files")
-    clear_data()
+    data_manager.clear_data()
     files = [os.path.join(folder_selected, f) for f in os.listdir(folder_selected) 
                 if f.endswith(filetype.lower()) or f.endswith(filetype.upper())]
     for path in files:
         item = read_file(path, filetype)
-        insert_data(
+        data_manager.insert_data(
             file_ext=filetype,
             item=item
         )
 
 def open_file(filetype):
+    data_manager = DataManager()
     file_types = [(f"{filetype.upper()} Files", f"*.{filetype}"), ("All Files", "*.*")]
     files_selected = filedialog.askopenfilenames(title=f"Open {filetype.upper()} File(s)", filetypes=file_types)
-    clear_data()
+    data_manager.clear_data()
     for path in files_selected:
         item = read_file(path, filetype)
-        insert_data(
+        data_manager.insert_data(
             file_ext=filetype,
             item=item
         )
