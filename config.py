@@ -48,9 +48,9 @@ def setup_logging():
 # Example usage:
 setup_logging()
 
-# Log some messages for testing
-logging.debug("This is a debug message.")
-logging.info("This is an info message.")
-logging.warning("This is a warning message.")
-logging.error("This is an error message.")
-logging.critical("This is a critical message.")
+# # Log some messages for testing
+# logging.debug("This is a debug message.")
+# logging.info("This is an info message.")
+# logging.warning("This is a warning message.")
+# logging.error("This is an error message.")
+# logging.critical("This is a critical message.")
