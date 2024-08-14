@@ -38,7 +38,7 @@ class DataManager(Observable):
             data_model.file_name = item['file_name']
             data_model.header_info = item['header_info']
             data_model.data = item['data']
-            data_model.greyscale_image = convert_data_to_greyscale_image(item['data'])
+            data_model.original_image = convert_data_to_greyscale_image(item['data'])
             self.data_for_analisys.append(data_model)
         elif file_ext.lower() == "mpp":
             filename_only = os.path.basename(item['file_name'])
@@ -50,43 +50,9 @@ class DataManager(Observable):
                 data_model.frame_number = i
                 data_model.header_info = item['header_info']
                 data_model.data = frame
-                data_model.greyscale_image = convert_data_to_greyscale_image(frame)
+                data_model.original_image = convert_data_to_greyscale_image(frame)
                 self.data_for_analisys.append(data_model)
         self.notify_observers()
-
-# class DataManager(Observable):
-#     def __init__(self):
-#         super().__init__()
-#         self.data_for_analisys = []
-
-#     def clear_data(self):
-#         self.data_for_analisys.clear()
-#         self.notify_observers()
-
-#     def insert_data(self, file_ext, item):
-#         # Existing logic for inserting data
-#         if file_ext.lower() == "stp" or file_ext.lower() == "s94":
-#             filename_only = os.path.basename(item['file_name'])
-#             data_model = FileDataModel()
-#             data_model.data_name = filename_only
-#             data_model.file_name = item['file_name']
-#             data_model.header_info = item['header_info']
-#             data_model.data = item['data']
-#             data_model.greyscale_image = convert_data_to_greyscale_image(item['data'])
-#             self.data_for_analisys.append(data_model)
-#         elif file_ext.lower() == "mpp":
-#             filename_only = os.path.basename(item['file_name'])
-#             for i, frame in enumerate(item['data'], start=1):
-#                 frame_name = f"frame {i}"
-#                 data_model = FileDataModel()
-#                 data_model.data_name = frame_name
-#                 data_model.file_name = item['file_name']
-#                 data_model.frame_number = i
-#                 data_model.header_info = item['header_info']
-#                 data_model.data = frame
-#                 data_model.greyscale_image = convert_data_to_greyscale_image(frame)
-#                 self.data_for_analisys.append(data_model)
-#         self.notify_observers()
 
 def convert_data_to_greyscale_image(points):
     """

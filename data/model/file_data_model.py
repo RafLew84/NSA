@@ -17,10 +17,50 @@ class FileDataModel:
         self._header_info = None
         self._frame_number = None
         self._data = None
-        self._greyscale_image = None
+        self._original_image = None
         self._operations = []
+        self._image_for_analisys = None
+        self._labeled_image = None
+        self._labeled_overlays = None
+        self._labeled_overlays_white = None
+        self._areas = None
+        self._labels_names = None
+        self._nearest_neighbor_distance = None
+        self._nearest_neighbor_name = None
 
     # Getters
+    @property
+    def image_for_analisys(self):
+        return self._image_for_analisys
+    
+    @property
+    def labeled_image(self):
+        return self._labeled_image
+    
+    @property
+    def labeled_overlays(self):
+        return self._labeled_overlays
+    
+    @property
+    def labeled_overlays_white(self):
+        return self._labeled_overlays_white
+    
+    @property
+    def areas(self):
+        return self._areas
+    
+    @property
+    def labels_names(self):
+        return self._labels_names
+    
+    @property
+    def nearest_neighbor_distance(self):
+        return self._nearest_neighbor_distance
+    
+    @property
+    def nearest_neighbor_name(self):
+        return self._nearest_neighbor_name
+
     @property
     def data_name(self):
         return self._data_name
@@ -42,14 +82,46 @@ class FileDataModel:
         return self._data
 
     @property
-    def greyscale_image(self):
-        return self._greyscale_image
+    def original_image(self):
+        return self._original_image
 
     @property
     def operations(self):
         return self._operations
 
     # Setters
+    @image_for_analisys.setter
+    def image_for_analisys(self, value):
+        self._image_for_analisys = value
+    
+    @labeled_image.setter
+    def labeled_image(self, value):
+        self._labeled_image = value
+
+    @labeled_overlays.setter
+    def labeled_overlays(self, value):
+        self._labeled_overlays = value
+    
+    @labeled_overlays_white.setter
+    def labeled_overlays_white(self, value):
+        self._labeled_overlays_white = value
+    
+    @areas.setter
+    def areas(self, value):
+        self._areas = value
+    
+    @labels_names.setter
+    def labeld_names(self, value):
+        self._labels_names = value
+    
+    @nearest_neighbor_distance.setter
+    def nearest_neighbor_distance(self, value):
+        self._nearest_neighbor_distance = value
+
+    @nearest_neighbor_name.setter
+    def nearest_neighbor_name(self, value):
+        self._nearest_neighbor_name = value
+
     @data_name.setter
     def data_name(self, value):
         self._data_name = value
@@ -70,9 +142,9 @@ class FileDataModel:
     def data(self, value):
         self._data = value
 
-    @greyscale_image.setter
-    def greyscale_image(self, value):
-        self._greyscale_image = value
+    @original_image.setter
+    def original_image(self, value):
+        self._original_image = value
 
     # Operations methods
     def clear_operations(self):
