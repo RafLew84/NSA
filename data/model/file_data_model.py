@@ -10,8 +10,11 @@ import os, sys
 
 sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 
-class FileDataModel:
+from data.observer.observable import Observable
+
+class FileDataModel(Observable):
     def __init__(self):
+        super().__init__()  # Call the Observable's constructor
         self._data_name = None
         self._file_name = None
         self._header_info = None
@@ -89,69 +92,85 @@ class FileDataModel:
     def operations(self):
         return self._operations
 
-    # Setters
+    # Property Setters with Notification
     @image_for_analisys.setter
     def image_for_analisys(self, value):
         self._image_for_analisys = value
-    
+        self.notify_observers()
+
     @labeled_image.setter
     def labeled_image(self, value):
         self._labeled_image = value
+        self.notify_observers()
 
     @labeled_overlays.setter
     def labeled_overlays(self, value):
         self._labeled_overlays = value
-    
+        self.notify_observers()
+
     @labeled_overlays_white.setter
     def labeled_overlays_white(self, value):
         self._labeled_overlays_white = value
-    
+        self.notify_observers()
+
     @areas.setter
     def areas(self, value):
         self._areas = value
-    
+        self.notify_observers()
+
     @labels_names.setter
-    def labeld_names(self, value):
+    def labels_names(self, value):
         self._labels_names = value
-    
+        self.notify_observers()
+
     @nearest_neighbor_distance.setter
     def nearest_neighbor_distance(self, value):
         self._nearest_neighbor_distance = value
+        self.notify_observers()
 
     @nearest_neighbor_name.setter
     def nearest_neighbor_name(self, value):
         self._nearest_neighbor_name = value
+        self.notify_observers()
 
     @data_name.setter
     def data_name(self, value):
         self._data_name = value
+        self.notify_observers()
 
     @file_name.setter
     def file_name(self, value):
         self._file_name = value
+        self.notify_observers()
 
     @header_info.setter
     def header_info(self, value):
         self._header_info = value
+        self.notify_observers()
 
     @frame_number.setter
     def frame_number(self, value):
         self._frame_number = value
+        self.notify_observers()
 
     @data.setter
     def data(self, value):
         self._data = value
+        self.notify_observers()
 
     @original_image.setter
     def original_image(self, value):
         self._original_image = value
+        self.notify_observers()
 
-    # Operations methods
+    # Operations methods with Notification
     def clear_operations(self):
         self._operations.clear()
+        self.notify_observers()
 
     def add_operation(self, operation):
         self._operations.append(operation)
+        self.notify_observers()
 
     def get_operation(self, index):
         if 0 <= index < len(self._operations):
@@ -161,3 +180,56 @@ class FileDataModel:
 
     def get_all_operations(self):
         return self._operations[:]
+    
+    def get_header_string(self):
+        header_labels_generator = {
+            "s94": self.get_s94_labels,
+            "stp": self.get_stp_labels,
+            "mpp": self.get_mpp_labels
+        }
+
+        header_labels_func = header_labels_generator.get(self.file_name[-3:].lower())
+        if header_labels_func:
+            return header_labels_func()
+    
+    def get_s94_labels(self):
+        header = [
+            f"X Amplitude: {self.header_info.get('x_size', ''):.2f} nm",
+            f"Y Amplitude: {self.header_info.get('y_size', ''):.2f} nm",
+            f"Number of cols: {self.header_info.get('x_points', '')}",
+            f"Number of rows: {self.header_info.get('y_points', '')}",
+            f"X Offset: {self.header_info.get('x_offset', '')}",
+            f"Y Offset: {self.header_info.get('y_offset', '')}",
+            f"Z Gain: {self.header_info.get('z_gain', '')}"
+        ]
+
+        return f"Filename: {self.data_name}  {header[0]}  {header[1]}\n{header[2]}  {header[3]}"
+
+    def get_mpp_labels(self):
+        header = [
+            f'X Amplitude: {float(self.header_info.get("Control", {}).get("X Amplitude", "")[:-3]):.2f} nm',
+            f'Y Amplitude: {float(self.header_info.get("Control", {}).get("Y Amplitude", "")[:-3]):.2f} nm',
+            f'Number of cols: {self.header_info.get("General Info", {}).get("Number of columns", "")}',
+            f'Number of rows: {self.header_info.get("General Info", {}).get("Number of rows", "")}',
+            f'X Offset: {self.header_info.get("Control", {}).get("X Offset", "")}',
+            f'Y Offset: {self.header_info.get("Control", {}).get("Y Offset", "")}',
+            f'Z Gain: {self.header_info.get("Control", {}).get("Z Gain", "")}'
+        ]
+
+        filename = os.path.basename(self.file_name)
+
+        return f"Filename: {filename} Frame: {self.frame_number}  {header[0]}\n{header[1]}  {header[2]}  {header[3]}"
+
+    def get_stp_labels(self):
+        header = [
+            f"X Amplitude: {float(self.header_info.get('X Amplitude', '')[:-3]):.2f} nm",
+            f"Y Amplitude: {float(self.header_info.get('Y Amplitude', '')[:-3]):.2f} nm",
+            f"Z Amplitude: {self.header_info.get('Z Amplitude', '')}",
+            f"Number of cols: {self.header_info.get('Number of columns', '')}",
+            f"Number of rows: {self.header_info.get('Number of rows', '')}",
+            f"X Offset: {self.header_info.get('X Offset', '')}",
+            f"Y Offset: {self.header_info.get('Y Offset', '')}",
+            f"Z Gain: {self.header_info.get('Z Gain', '')}"
+        ]
+
+        return f"Filename: {self.data_name}  {header[0]}  {header[1]}\n{header[3]}  {header[4]}"

@@ -16,7 +16,7 @@ def create_canvas_ui(
     canvas_ui_section = ttk.Frame(root, padding="5")
     canvas_ui_section.grid(row=0, column=2, padx=5, pady=2, sticky="nsew")
 
-    header_info_label = tk.Label(canvas_ui_section, text="header\ninfo\nlabel")
+    header_info_label = tk.Label(canvas_ui_section, text="", justify="left", anchor="w")
     header_info_label.grid(row=0, column=0, padx=5, pady=5, sticky="nwe")
 
     canvas = tk.Canvas(canvas_ui_section, bg="white")

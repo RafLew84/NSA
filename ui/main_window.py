@@ -21,6 +21,7 @@ from tkinterweb import HtmlFrame
 
 from data.observer.observer import Observer
 from data.data_manager import DataManager
+from data.selected_item_manager import SelectedItemManager
 
 from ui.menu import create_menu
 from ui.data_ui import create_data_ui
@@ -39,6 +40,9 @@ class MainWindow(Observer):
 
         self.data_manager = DataManager()
         self.data_manager.add_observer(self)
+
+        self.selected_item_manager = SelectedItemManager()
+        self.selected_item_manager.add_observer(self)
 
         create_menu(self.root)
 
@@ -66,7 +70,7 @@ class MainWindow(Observer):
         self.header_info_label = None
         self.canvas = None
 
-        self.canvas_ui_section, self.header_info_label, self.canvas = create_canvas_ui(
+        self.canvas_ui_section, self.canvas, self.header_info_label = create_canvas_ui(
             self.root,
             self.header_info_label,
             self.canvas
@@ -78,17 +82,37 @@ class MainWindow(Observer):
 
         # self.data = []
 
+        self.data_listbox.bind("<<ListboxSelect>>", self.show_data_onDataListboxSelect)
+
         # Ensure the root window also allows the frame to expand
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(2, weight=1)
+    
+    def show_data_onDataListboxSelect(self, event=None):
+        selection = self.data_listbox.curselection()
+        if selection:
+            index = selection[0] 
+            data_model = self.data_manager.data_for_analisys[index]  
+            
+            # Update the selected item in SelectedItemManager
+            self.selected_item_manager.insert_data(data_model)
 
-    def update(self):
+    def update(self, observable, *args, **kwargs):
         """Update the UI components based on changes in data."""
-        self.update_listbox()
+        if observable is self.data_manager:
+            self.update_listbox()
+        elif observable is self.selected_item_manager:
+            self.update_selected_item_ui()
 
     def update_listbox(self):
         """Populate the Listbox with data names from data_for_analisys."""
         self.data_listbox.delete(0, tk.END)
         for data_model in self.data_manager.data_for_analisys:
             self.data_listbox.insert(tk.END, data_model.data_name)
+    
+    def update_selected_item_ui(self):
+        """Update the UI based on the selected item."""
+        selected_item = self.selected_item_manager.selected_item
+        if selected_item:
+            self.header_info_label.config(text=selected_item.get_header_string())
 
