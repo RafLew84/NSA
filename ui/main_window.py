@@ -42,12 +42,18 @@ class MainWindow(Observer):
         self.selected_measured_image = tk.StringVar()
         self.data_listbox = None
         self.remove_button = None
+        self.operations_listbox = None
+        self.move_for_analisys_button = None
+        self.find_button = None
 
-        self.data_ui_section, self.data_listbox, self.remove_button = create_data_ui(
+        self.data_ui_section, self.data_listbox, self.remove_button, self.operations_listbox, self.move_for_analisys_button, self.find_button = create_data_ui(
             self.root, 
             self.selected_measured_image, 
             self.data_listbox, 
-            self.remove_button
+            self.remove_button,
+            self.operations_listbox,
+            self.move_for_analisys_button,
+            self.find_button
         )
         # self.create_canvas_ui()
         # self.create_scaling_ui()
