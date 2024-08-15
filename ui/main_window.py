@@ -24,6 +24,7 @@ from data.data_manager import DataManager
 
 from ui.menu import create_menu
 from ui.data_ui import create_data_ui
+from ui.operations_ui import create_operations_ui
 
 class MainWindow(Observer):
     def __init__(self, root):
@@ -35,10 +36,11 @@ class MainWindow(Observer):
         """
         self.root = root
 
-        self.data_manager = DataManager()  # Assuming this is your data manager
+        self.data_manager = DataManager()
         self.data_manager.add_observer(self)
 
         create_menu(self.root)
+
         self.selected_measured_image = tk.StringVar()
         self.data_listbox = None
         self.remove_button = None
@@ -55,6 +57,10 @@ class MainWindow(Observer):
             self.move_for_analisys_button,
             self.find_button
         )
+
+        self.selected_operation = tk.StringVar()
+
+        self.selected_operation = create_operations_ui(self.root, self.selected_operation)
         # self.create_canvas_ui()
         # self.create_scaling_ui()
         # self.create_navigation_ui()
