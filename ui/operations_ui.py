@@ -24,5 +24,5 @@ def create_operations_ui(
         selected_operation, 
         *operations
     )
-    opedrations_selection_dropdown.grid(row=0, column=0, columnspan=2, padx=5, pady=1, sticky="nw")
+    opedrations_selection_dropdown.grid(row=0, column=0, columnspan=2, padx=5, pady=1, sticky="n")
 

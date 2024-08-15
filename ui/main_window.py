@@ -25,6 +25,7 @@ from data.data_manager import DataManager
 from ui.menu import create_menu
 from ui.data_ui import create_data_ui
 from ui.operations_ui import create_operations_ui
+from ui.canvas_ui import create_canvas_ui
 
 class MainWindow(Observer):
     def __init__(self, root):
@@ -61,7 +62,13 @@ class MainWindow(Observer):
         self.selected_operation = tk.StringVar()
 
         self.selected_operation = create_operations_ui(self.root, self.selected_operation)
-        # self.create_canvas_ui()
+
+        self.canvas = None
+
+        self.canvas_ui_section, self.canvas = create_canvas_ui(
+            self.root,
+            self.canvas
+        )
         # self.create_scaling_ui()
         # self.create_navigation_ui()
         # self.create_show_result_ui()
@@ -70,7 +77,7 @@ class MainWindow(Observer):
 
         # Ensure the root window also allows the frame to expand
         self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_columnconfigure(2, weight=1)
 
     def update(self):
         """Update the UI components based on changes in data."""
