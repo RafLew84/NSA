@@ -63,12 +63,15 @@ class MainWindow(Observer):
 
         self.selected_operation = create_operations_ui(self.root, self.selected_operation)
 
+        self.header_info_label = None
         self.canvas = None
 
-        self.canvas_ui_section, self.canvas = create_canvas_ui(
+        self.canvas_ui_section, self.header_info_label, self.canvas = create_canvas_ui(
             self.root,
+            self.header_info_label,
             self.canvas
         )
+
         # self.create_scaling_ui()
         # self.create_navigation_ui()
         # self.create_show_result_ui()

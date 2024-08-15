@@ -9,11 +9,15 @@ from tkinter import ttk
 
 def create_canvas_ui(
         root,
-        canvas
+        canvas,
+        header_info_label
         ):
     # Create a frame for the data UI section
     canvas_ui_section = ttk.Frame(root, padding="5")
     canvas_ui_section.grid(row=0, column=2, padx=5, pady=2, sticky="nsew")
+
+    header_info_label = tk.Label(canvas_ui_section, text="header\ninfo\nlabel")
+    header_info_label.grid(row=0, column=0, padx=5, pady=5, sticky="nwe")
 
     canvas = tk.Canvas(canvas_ui_section, bg="white")
     canvas.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
@@ -39,4 +43,4 @@ def create_canvas_ui(
     canvas_ui_section.grid_rowconfigure(1, weight=1)  
     canvas_ui_section.grid_columnconfigure(0, weight=1)
 
-    return canvas_ui_section, canvas
+    return canvas_ui_section, canvas, header_info_label
