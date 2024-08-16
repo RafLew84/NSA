@@ -27,6 +27,7 @@ from ui.menu import create_menu
 from ui.data_ui import create_data_ui
 from ui.operations_ui import create_operations_ui
 from ui.canvas_ui import create_canvas_ui
+from ui.scaling_ui import create_scaling_ui
 
 class MainWindow(Observer):
     def __init__(self, root):
@@ -76,7 +77,15 @@ class MainWindow(Observer):
             self.canvas
         )
 
-        # self.create_scaling_ui()
+        self.scaling_factor_var = tk.DoubleVar()
+        self.scale_factor_slider = None
+
+        self.scaling_ui_section, self.scaling_factor_var, self.scale_factor_slider = create_scaling_ui(
+            self.root,
+            self.scaling_factor_var,
+            self.scale_factor_slider
+        )
+
         # self.create_navigation_ui()
         # self.create_show_result_ui()
 

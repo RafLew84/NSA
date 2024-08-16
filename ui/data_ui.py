@@ -17,7 +17,7 @@ def create_data_ui(
     ):
     # Create a frame for the data UI section
     data_ui_section = ttk.Frame(root, padding="5")
-    data_ui_section.grid(row=0, column=0, padx=5, pady=2, sticky="nsew")
+    data_ui_section.grid(row=0, column=0, rowspan=2, padx=5, pady=2, sticky="nsew")
 
     measured_image_options = ["Selected", "Original", "Labeled", "Contours", "WContours"]
 
