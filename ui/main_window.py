@@ -83,10 +83,16 @@ class MainWindow(Observer):
         # self.data = []
 
         self.data_listbox.bind("<<ListboxSelect>>", self.show_data_onDataListboxSelect)
+        self.remove_button.config(command=self.on_remove_button_click)
+
 
         # Ensure the root window also allows the frame to expand
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(2, weight=1)
+    
+    def on_remove_button_click(self):
+        pass
+        # self.selected_item_manager.selected_item.data_name = "change"
     
     def show_data_onDataListboxSelect(self, event=None):
         selection = self.data_listbox.curselection()
@@ -103,6 +109,8 @@ class MainWindow(Observer):
             self.update_listbox()
         elif observable is self.selected_item_manager:
             self.update_selected_item_ui()
+        elif observable is self.selected_item_manager.selected_item:
+            self.update_selected_item_ui()
 
     def update_listbox(self):
         """Populate the Listbox with data names from data_for_analisys."""
@@ -115,4 +123,5 @@ class MainWindow(Observer):
         selected_item = self.selected_item_manager.selected_item
         if selected_item:
             self.header_info_label.config(text=selected_item.get_header_string())
+            # You can add more UI updates here based on the selected item
 

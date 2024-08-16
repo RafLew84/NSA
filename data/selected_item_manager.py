@@ -26,5 +26,13 @@ class SelectedItemManager(Observable):
             self.initialized = True
     
     def insert_data(self, item):
+        if self.selected_item:
+            self.selected_item.remove_observer(self)  # Remove self as an observer of the old item
         self.selected_item = item
-        self.notify_observers()
+        if self.selected_item:
+            self.selected_item.add_observer(self)  # Add self as an observer of the new item
+        self.notify_observers()  # Notify observers of the selection change
+
+    def update(self, observable, *args, **kwargs):
+        if observable is self.selected_item:
+            self.notify_observers()  # Notify observers if the selected item has changed
