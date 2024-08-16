@@ -29,6 +29,7 @@ from ui.operations_ui import create_operations_ui
 from ui.canvas_ui import create_canvas_ui
 from ui.scaling_ui import create_scaling_ui
 from ui.navigation_ui import create_navigation_ui
+from ui.show_result_ui import create_show_result_ui
 
 class MainWindow(Observer):
     def __init__(self, root):
@@ -97,7 +98,19 @@ class MainWindow(Observer):
             self.next_button,
             self.navigation_slider
         )
-        # self.create_show_result_ui()
+        
+        self.checkbox_color_var = tk.IntVar()
+        self.result_treeview = None
+        self.delete_button = None
+        self.save_button = None
+        
+        self.result_ui_section, self.checkbox_color_var, self.result_treeview, self.delete_button, self.save_button = create_show_result_ui(
+            self.root,
+            self.checkbox_color_var,
+            self.result_treeview,
+            self.delete_button,
+            self.save_button
+        )
 
         # self.data = []
 

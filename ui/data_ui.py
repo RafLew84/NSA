@@ -80,7 +80,8 @@ def create_data_ui(
     move_for_analisys_button.grid(row=2, column=2, padx=5, pady=5, sticky="n")
 
     # find button
-    find_button = tk.Button(data_ui_section, text="FIND")
+    font_settings = ("Helvetica", 12, "bold")
+    find_button = tk.Button(data_ui_section, text="FIND", font=font_settings)
     find_button.grid(row=3, column=0, columnspan=4, padx=5, pady=5, sticky="nwe")
 
 
