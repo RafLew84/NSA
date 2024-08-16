@@ -28,6 +28,7 @@ from ui.data_ui import create_data_ui
 from ui.operations_ui import create_operations_ui
 from ui.canvas_ui import create_canvas_ui
 from ui.scaling_ui import create_scaling_ui
+from ui.navigation_ui import create_navigation_ui
 
 class MainWindow(Observer):
     def __init__(self, root):
@@ -86,7 +87,16 @@ class MainWindow(Observer):
             self.scale_factor_slider
         )
 
-        # self.create_navigation_ui()
+        self.prev_button = None
+        self.next_button = None
+        self.navigation_slider = None
+
+        self.navigation_ui_section, self.navigation_slider, self.prev_button, self.next_button = create_navigation_ui(
+            self.root,
+            self.prev_button,
+            self.next_button,
+            self.navigation_slider
+        )
         # self.create_show_result_ui()
 
         # self.data = []
