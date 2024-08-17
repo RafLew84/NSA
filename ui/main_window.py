@@ -146,8 +146,9 @@ class MainWindow(Observer):
         self.find_button = None
     
     def on_remove_button_click(self):
-        pass
+        self.data_manager.remove_item(self.selected_item_manager.selected_item)
         # self.selected_item_manager.selected_item.data_name = "change"
+        
     
     def show_data_onDataListboxSelect(self, event=None):
         selection = self.data_listbox.curselection()

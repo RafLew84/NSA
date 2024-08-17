@@ -29,6 +29,10 @@ class DataManager(Observable):
         self.data_for_analisys.clear()
         self.notify_observers()
 
+    def remove_item(self, item):
+        self.data_for_analisys.remove(item)
+        self.notify_observers()
+
     def insert_data(self, file_ext, item):
         # Existing logic for inserting data
         if file_ext.lower() == "stp" or file_ext.lower() == "s94":
