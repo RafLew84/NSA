@@ -26,3 +26,5 @@ def create_operations_ui(
     )
     opedrations_selection_dropdown.grid(row=0, column=0, columnspan=2, padx=5, pady=1, sticky="n")
 
+    return operations_ui_section, selected_operation
+

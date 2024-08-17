@@ -41,21 +41,30 @@ class MainWindow(Observer):
         """
         self.root = root
 
+        self.setup_observers()
+
+        create_menu(self.root)
+
+        self.setup_ui_elements()
+
+        self.create_ui()
+
+        self.data_listbox.bind("<<ListboxSelect>>", self.show_data_onDataListboxSelect)
+        self.remove_button.config(command=self.on_remove_button_click)
+
+
+        # Ensure the root window also allows the frame to expand
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(2, weight=1)
+
+    def setup_observers(self):
         self.data_manager = DataManager()
         self.data_manager.add_observer(self)
 
         self.selected_item_manager = SelectedItemManager()
         self.selected_item_manager.add_observer(self)
 
-        create_menu(self.root)
-
-        self.selected_measured_image = tk.StringVar()
-        self.data_listbox = None
-        self.remove_button = None
-        self.operations_listbox = None
-        self.move_for_analisys_button = None
-        self.find_button = None
-
+    def create_ui(self):
         self.data_ui_section, self.data_listbox, self.remove_button, self.operations_listbox, self.move_for_analisys_button, self.find_button = create_data_ui(
             self.root, 
             self.selected_measured_image, 
@@ -66,12 +75,10 @@ class MainWindow(Observer):
             self.find_button
         )
 
-        self.selected_operation = tk.StringVar()
-
-        self.selected_operation = create_operations_ui(self.root, self.selected_operation)
-
-        self.header_info_label = None
-        self.canvas = None
+        self.operations_section,  self.selected_operation = create_operations_ui(
+            self.root, 
+            self.selected_operation
+        )
 
         self.canvas_ui_section, self.canvas, self.header_info_label = create_canvas_ui(
             self.root,
@@ -79,18 +86,11 @@ class MainWindow(Observer):
             self.canvas
         )
 
-        self.scaling_factor_var = tk.DoubleVar()
-        self.scale_factor_slider = None
-
         self.scaling_ui_section, self.scaling_factor_var, self.scale_factor_slider = create_scaling_ui(
             self.root,
             self.scaling_factor_var,
             self.scale_factor_slider
         )
-
-        self.prev_button = None
-        self.next_button = None
-        self.navigation_slider = None
 
         self.navigation_ui_section, self.navigation_slider, self.prev_button, self.next_button = create_navigation_ui(
             self.root,
@@ -98,11 +98,6 @@ class MainWindow(Observer):
             self.next_button,
             self.navigation_slider
         )
-        
-        self.checkbox_color_var = tk.IntVar()
-        self.result_treeview = None
-        self.delete_button = None
-        self.save_button = None
         
         self.result_ui_section, self.checkbox_color_var, self.result_treeview, self.delete_button, self.save_button = create_show_result_ui(
             self.root,
@@ -112,15 +107,43 @@ class MainWindow(Observer):
             self.save_button
         )
 
-        # self.data = []
+    def setup_ui_elements(self):
+        self.setup_data_ui_elements()
+        self.setup_operations_ui_elements()
+        self.setup_canvas_ui_elements()
+        self.setup_results_ui_elements()
+        self.setup_navigation_ui_elements()
+        self.setup_scaling_ui_elements()
 
-        self.data_listbox.bind("<<ListboxSelect>>", self.show_data_onDataListboxSelect)
-        self.remove_button.config(command=self.on_remove_button_click)
+    def setup_results_ui_elements(self):
+        self.checkbox_color_var = tk.IntVar()
+        self.result_treeview = None
+        self.delete_button = None
+        self.save_button = None
 
+    def setup_navigation_ui_elements(self):
+        self.prev_button = None
+        self.next_button = None
+        self.navigation_slider = None
 
-        # Ensure the root window also allows the frame to expand
-        self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_columnconfigure(2, weight=1)
+    def setup_scaling_ui_elements(self):
+        self.scaling_factor_var = tk.DoubleVar()
+        self.scale_factor_slider = None
+
+    def setup_canvas_ui_elements(self):
+        self.header_info_label = None
+        self.canvas = None
+
+    def setup_operations_ui_elements(self):
+        self.selected_operation = tk.StringVar()
+
+    def setup_data_ui_elements(self):
+        self.selected_measured_image = tk.StringVar()
+        self.data_listbox = None
+        self.remove_button = None
+        self.operations_listbox = None
+        self.move_for_analisys_button = None
+        self.find_button = None
     
     def on_remove_button_click(self):
         pass
