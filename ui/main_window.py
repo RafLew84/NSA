@@ -31,6 +31,8 @@ from ui.scaling_ui import create_scaling_ui
 from ui.navigation_ui import create_navigation_ui
 from ui.show_result_ui import create_show_result_ui
 
+from PIL import Image, ImageTk
+
 class MainWindow(Observer):
     def __init__(self, root):
         """
@@ -42,20 +44,20 @@ class MainWindow(Observer):
         self.root = root
 
         self.setup_observers()
-
         create_menu(self.root)
-
         self.setup_ui_elements()
-
         self.create_ui()
+        self.bind_callbacks()
+        self.configure_main_window()
 
-        self.data_listbox.bind("<<ListboxSelect>>", self.show_data_onDataListboxSelect)
-        self.remove_button.config(command=self.on_remove_button_click)
-
-
-        # Ensure the root window also allows the frame to expand
+    def configure_main_window(self):
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(2, weight=1)
+
+    def bind_callbacks(self):
+        self.data_listbox.bind("<<ListboxSelect>>", self.show_data_onDataListboxSelect)
+        self.remove_button.config(command=self.on_remove_button_click)
+        self.scale_factor_slider.bind("<ButtonRelease-1>", self.update_image_on_rescale_slider_change)
 
     def setup_observers(self):
         self.data_manager = DataManager()
@@ -158,6 +160,35 @@ class MainWindow(Observer):
             
             # Update the selected item in SelectedItemManager
             self.selected_item_manager.insert_data(data_model)
+    
+    def update_image_on_rescale_slider_change(self, event=None):
+        self.handle_displaying_image_on_canvas(self.selected_item_manager.selected_item.original_image)
+
+    def handle_displaying_image_on_canvas(self, img, text=None):
+        self.canvas.delete("all")
+        # Retrieve the scale factor
+        scale_factor = self.scaling_factor_var.get()
+        # Resize the image
+        img = img.resize((int(img.width * scale_factor), int(img.height * scale_factor)), Image.LANCZOS)
+
+        # Convert the PIL image to a Tkinter PhotoImage
+        image_width, image_height = img.size
+        photo = ImageTk.PhotoImage(img)
+
+        # Display the image on the canvas
+        self.canvas.create_image(0, 0, anchor="nw", image=photo)
+        if text:
+            self.data_canvas_processing.create_text(
+                20, 
+                image_height + 10, 
+                text=text, 
+                anchor=tk.NW, 
+                font=("Arial", 16), 
+                fill="black"
+            )
+
+        # Save a reference to the PhotoImage to prevent garbage collection
+        self.canvas.image = photo
 
     def update(self, observable, *args, **kwargs):
         """Update the UI components based on changes in data."""
@@ -179,5 +210,7 @@ class MainWindow(Observer):
         selected_item = self.selected_item_manager.selected_item
         if selected_item:
             self.header_info_label.config(text=selected_item.get_header_string())
+            img = self.selected_item_manager.selected_item.original_image
+            self.handle_displaying_image_on_canvas(img)
             # You can add more UI updates here based on the selected item
 
