@@ -33,6 +33,10 @@ from ui.show_result_ui import create_show_result_ui
 
 from PIL import Image, ImageTk
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class MainWindow(Observer):
     def __init__(self, root):
         """
@@ -58,6 +62,9 @@ class MainWindow(Observer):
         self.data_listbox.bind("<<ListboxSelect>>", self.show_data_onDataListboxSelect)
         self.remove_button.config(command=self.on_remove_button_click)
         self.scale_factor_slider.bind("<ButtonRelease-1>", self.update_image_on_rescale_slider_change)
+        self.navigation_slider.bind("<B1-Motion>", self.update_image_from_navigation_slider_onChange)
+        self.next_button.config(command=self.navigate_next_onClick)
+        self.prev_button.config(command=self.navigate_prev_onClick)
 
     def setup_observers(self):
         self.data_manager = DataManager()
@@ -149,7 +156,6 @@ class MainWindow(Observer):
     
     def on_remove_button_click(self):
         self.data_manager.remove_item(self.selected_item_manager.selected_item)
-        # self.selected_item_manager.selected_item.data_name = "change"
         
     
     def show_data_onDataListboxSelect(self, event=None):
@@ -160,9 +166,35 @@ class MainWindow(Observer):
             
             # Update the selected item in SelectedItemManager
             self.selected_item_manager.insert_data(data_model)
+            self.navigation_slider.set(index + 1)
     
     def update_image_on_rescale_slider_change(self, event=None):
         self.handle_displaying_image_on_canvas(self.selected_item_manager.selected_item.original_image)
+
+    def update_image_from_navigation_slider_onChange(self, event):
+        self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[int(self.navigation_slider.get()-1)])
+
+    def navigate_prev_onClick(self):
+        try:
+            current_value = self.navigation_slider.get()
+            if current_value > 0:
+                self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[current_value - 1])
+                self.navigation_slider.set(current_value - 1)
+        except ValueError:
+            error_msg = "Invalid current value for navigation slider"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+    def navigate_next_onClick(self):
+        try:
+            current_value = self.navigation_slider.get()
+            if current_value < len(self.data_manager.data_for_analisys):
+                self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[current_value])
+                self.navigation_slider.set(current_value + 1)
+        except ValueError:
+            error_msg = "Invalid current value for navigation slider"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
 
     def handle_displaying_image_on_canvas(self, img, text=None):
         self.canvas.delete("all")
@@ -190,6 +222,10 @@ class MainWindow(Observer):
         # Save a reference to the PhotoImage to prevent garbage collection
         self.canvas.image = photo
 
+    def update_navigation_slider_range(self):
+        num_items = len(self.data_manager.data_for_analisys)
+        self.navigation_slider.config(from_=1, to=num_items)
+
     def update(self, observable, *args, **kwargs):
         """Update the UI components based on changes in data."""
         if observable is self.data_manager:
@@ -204,6 +240,7 @@ class MainWindow(Observer):
         self.data_listbox.delete(0, tk.END)
         for data_model in self.data_manager.data_for_analisys:
             self.data_listbox.insert(tk.END, data_model.data_name)
+            self.update_navigation_slider_range()
     
     def update_selected_item_ui(self):
         """Update the UI based on the selected item."""

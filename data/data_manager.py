@@ -28,6 +28,9 @@ class DataManager(Observable):
     def clear_data(self):
         self.data_for_analisys.clear()
         self.notify_observers()
+    
+    def get_index(self, item):
+        return self.data_for_analisys.index(item)
 
     def remove_item(self, item):
         self.data_for_analisys.remove(item)
