@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import font
 
 class CustomDropdownMenu(tk.Frame):
     def __init__(self, parent, categories, **kwargs):
@@ -12,15 +13,22 @@ class CustomDropdownMenu(tk.Frame):
         self.menu = tk.Menu(self.button, tearoff=False)
         self.button["menu"] = self.menu
 
+        # Define font for categories
+        self.category_font = font.Font(weight="bold", size=10)  # Bold font for categories
+
         # Populate the menu with categories and options
         self.create_menu(categories)
 
     def create_menu(self, categories):
         for category, options in categories.items():
-            self.menu.add_command(label=category, state=tk.DISABLED)  # Add category as a disabled label
+            # Add category label in uppercase, bold, and black
+            self.menu.add_command(
+                label=category.upper(),
+                state=tk.DISABLED,
+                font=self.category_font,
+                foreground="black"
+            )
             for option in options:
-                self.menu.add_command(label=option, command=lambda opt=option: self.on_select(opt))
+                # Add regular options
+                self.menu.add_command(label=option)
             self.menu.add_separator()  # Add a separator between categories
-
-    def on_select(self, option):
-        print(f"Selected: {option}")
