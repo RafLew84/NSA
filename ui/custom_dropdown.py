@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import font
 
 class CustomDropdownMenu(tk.Frame):
-    def __init__(self, parent, categories, **kwargs):
+    def __init__(self, parent, categories, command=None, **kwargs):
         super().__init__(parent, **kwargs)
+        self.command = command  # Store the command passed during initialization
 
         # Create a Menubutton that triggers the dropdown menu
         self.button = tk.Menubutton(self, text="Select an option", relief=tk.RAISED)
@@ -29,6 +30,13 @@ class CustomDropdownMenu(tk.Frame):
                 foreground="black"
             )
             for option in options:
-                # Add regular options
-                self.menu.add_command(label=option)
+                # Add regular options with a command to update selected_operation
+                self.menu.add_command(label=option, command=lambda opt=option: self.on_select(opt))
             self.menu.add_separator()  # Add a separator between categories
+
+    def on_select(self, option):
+        # Update the Menubutton text to show the selected option
+        self.button.config(text=option)
+        # If a command is provided, execute it with the selected option
+        if self.command:
+            self.command(option)

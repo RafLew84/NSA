@@ -65,6 +65,10 @@ class MainWindow(Observer):
         self.navigation_slider.bind("<B1-Motion>", self.update_image_from_navigation_slider_onChange)
         self.next_button.config(command=self.navigate_next_onClick)
         self.prev_button.config(command=self.navigate_prev_onClick)
+        self.save_button.config(command=self.save_button_onClick)
+    
+    def save_button_onClick(self):
+        print(self.selected_operation.get())
 
     def setup_observers(self):
         self.data_manager = DataManager()

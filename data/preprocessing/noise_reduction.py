@@ -14,7 +14,6 @@ import cv2
 
 import logging
 
-from data.processing.file_process import calculate_pixels_from_nm
 
 logger = logging.getLogger(__name__)
 
