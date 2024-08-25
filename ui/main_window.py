@@ -88,7 +88,7 @@ class MainWindow(Observer):
             self.find_button
         )
 
-        self.operations_section,  self.selected_operation = create_operations_ui(
+        self.operations_section, self.selected_operation = create_operations_ui(
             self.root, 
             self.selected_operation
         )
@@ -226,6 +226,11 @@ class MainWindow(Observer):
         # Save a reference to the PhotoImage to prevent garbage collection
         self.canvas.image = photo
 
+    def refresh_data_in_operations_listbox(self):
+        self.operations_listbox.delete(0, tk.END)
+        operations = [item.process_name for item in self.selected_item_manager.selected_item.operations]
+        self.operations_listbox.insert(tk.END, *operations)
+
     def update_navigation_slider_range(self):
         num_items = len(self.data_manager.data_for_analisys)
         self.navigation_slider.config(from_=1, to=num_items)
@@ -251,7 +256,8 @@ class MainWindow(Observer):
         selected_item = self.selected_item_manager.selected_item
         if selected_item:
             self.header_info_label.config(text=selected_item.get_header_string())
-            img = self.selected_item_manager.selected_item.original_image
+            self.refresh_data_in_operations_listbox()
+            img = self.selected_item_manager.selected_item.image_for_processing
             self.handle_displaying_image_on_canvas(img)
             # You can add more UI updates here based on the selected item
 

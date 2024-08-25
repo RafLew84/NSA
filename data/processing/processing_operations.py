@@ -49,7 +49,7 @@ def perform_otsu_threshold(params, img):
             img=np.array(img)
     )
     
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_local_threshold(params, img):
     process_name = "Local Threshold"
@@ -59,7 +59,7 @@ def perform_local_threshold(params, img):
         block_size=params['block_size'],
         offset=params['offset']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_niblack_threshold(params, img):
     process_name = "Niblack Threshold"
@@ -68,7 +68,7 @@ def perform_niblack_threshold(params, img):
         window_size=params['window_size'],
         k=params['k']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_sauvola_threshold(params, img):
     process_name = "Sauvola Threshold"
@@ -78,21 +78,21 @@ def perform_sauvola_threshold(params, img):
         k=params['k'],
         r=params['r']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_yen_threshold(params, img):
     process_name = "Yen Threshold"
     result_image = YenThreshold(
         img=np.array(img)
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_isodata_threshold(params, img):
     process_name = "ISODATA Threshold"
     result_image = IsodataThreshold(
         img=np.array(img)
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_erosion(params, img):
     process_name = "Binary Erosion"
@@ -101,7 +101,7 @@ def perform_binary_erosion(params, img):
         footprint_type=params['footprint_type'],
         footprint_size=params['footprint_size']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_dilation(params, img):
     process_name = "Binary Dilation"
@@ -110,7 +110,7 @@ def perform_binary_dilation(params, img):
         footprint_type=params['footprint_type'],
         footprint_size=params['footprint_size']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_opening(params, img):
     process_name = "Binary Opening"
@@ -119,7 +119,7 @@ def perform_binary_opening(params, img):
         footprint_type=params['footprint_type'],
         footprint_size=params['footprint_size']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_closing(params, img):
     process_name = "Binary Closing"
@@ -128,7 +128,7 @@ def perform_binary_closing(params, img):
         footprint_type=params['footprint_type'],
         footprint_size=params['footprint_size']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_removing_small_holes(params, img):
     process_name = "Remove Small Holes"
@@ -137,7 +137,7 @@ def perform_removing_small_holes(params, img):
         area_threshold=params['area_threshold'],
         connectivity=params['connectivity']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_removing_small_objects(params, img):
     process_name = "Remove Small Objects"
@@ -146,12 +146,12 @@ def perform_removing_small_objects(params, img):
         min_size=params['min_size'],
         connectivity=params['connectivity']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_manual_white_remove(params, img):
     process_name = "Manual Edit"
     result_image = ImageEditRemoveWhite(np.array(img))
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_threshold(params, img):
     process_name = "Binary Threshold"
@@ -159,4 +159,4 @@ def perform_binary_threshold(params, img):
         img=np.array(img),
         threshold=params['threshold']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)

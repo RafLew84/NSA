@@ -21,6 +21,7 @@ class FileDataModel(Observable):
         self._frame_number = None
         self._data = None
         self._original_image = None
+        self._image_for_processing = None
         self._operations = []
         self._image_for_analisys = None
         self._labeled_image = None
@@ -32,6 +33,10 @@ class FileDataModel(Observable):
         self._nearest_neighbor_name = None
 
     # Getters
+    @property
+    def image_for_processing(self):
+        return self._image_for_processing
+    
     @property
     def image_for_analisys(self):
         return self._image_for_analisys
@@ -93,6 +98,11 @@ class FileDataModel(Observable):
         return self._operations
 
     # Property Setters with Notification
+    @image_for_processing.setter
+    def image_for_processing(self, value):
+        self._image_for_processing = value
+        self.notify_observers()
+
     @image_for_analisys.setter
     def image_for_analisys(self, value):
         self._image_for_analisys = value

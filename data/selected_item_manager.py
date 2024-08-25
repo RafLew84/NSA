@@ -29,6 +29,7 @@ class SelectedItemManager(Observable):
         if self.selected_item:
             self.selected_item.remove_observer(self)  # Remove self as an observer of the old item
         self.selected_item = item
+        self.selected_item.image_for_processing = item.original_image
         if self.selected_item:
             self.selected_item.add_observer(self)  # Add self as an observer of the new item
         self.notify_observers()  # Notify observers of the selection change

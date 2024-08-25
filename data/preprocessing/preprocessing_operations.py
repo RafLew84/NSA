@@ -74,7 +74,7 @@ def perform_gaussian_blur(params, img):
             sigmaY=params['sigmaY']
             )
     
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_non_local_denoising(params, img):
     """
@@ -94,7 +94,7 @@ def perform_non_local_denoising(params, img):
             searchWinwowSize=params['searchWindowSize'],
             templateWindowSize=params['templateWindowSize']
             )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_gaussian_filter(params, img):
     """
@@ -113,7 +113,7 @@ def perform_gaussian_filter(params, img):
             sigma=params['sigma']
         )
     
-    return process_name,result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_erosion(params, img):
     """
@@ -134,7 +134,7 @@ def perform_erosion(params, img):
             iterations=params['iterations']
         )
     
-    return process_name,result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_greyscale_erosion(params, img):
     process_name = "Binary Greyscale Erosion"
@@ -144,7 +144,7 @@ def perform_binary_greyscale_erosion(params, img):
         kernel_size=params['kernel_size']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_gaussian_greyscale_erosion(params, img):
     process_name = "Gaussian Greyscale Erosion"
@@ -154,7 +154,7 @@ def perform_gaussian_greyscale_erosion(params, img):
         sigma=params['sigma']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_greyscale_dilation(params, img):
     process_name = "Binary Greyscale Dilation"
@@ -164,7 +164,7 @@ def perform_binary_greyscale_dilation(params, img):
         kernel_size=params['kernel_size']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_gaussian_greyscale_dilation(params, img):
     process_name = "Gaussian Greyscale Dilation"
@@ -174,7 +174,7 @@ def perform_gaussian_greyscale_dilation(params, img):
         sigma=params['sigma']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_greyscale_opening(params, img):
     process_name = "Binary Greyscale Opening"
@@ -184,7 +184,7 @@ def perform_binary_greyscale_opening(params, img):
         kernel_size=params['kernel_size']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_gaussian_greyscale_opening(params, img):
     process_name = "Gaussian Greyscale Opening"
@@ -194,7 +194,7 @@ def perform_gaussian_greyscale_opening(params, img):
         sigma=params['sigma']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_binary_greyscale_closing(params, img):
     process_name = "Binary Greyscale Closing"
@@ -204,7 +204,7 @@ def perform_binary_greyscale_closing(params, img):
         kernel_size=params['kernel_size']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_gaussian_greyscale_closing(params, img):
     process_name = "Gaussian Greyscale Closing"
@@ -214,7 +214,7 @@ def perform_gaussian_greyscale_closing(params, img):
         sigma=params['sigma']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_gamma_adjustment(params, img):
     process_name = "Gamma Adjustment"
@@ -223,7 +223,7 @@ def perform_gamma_adjustment(params, img):
         gamma=params['gamma']
     )
 
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_contrast_stretching(params, img):
     process_name = "Contrast Stretching"
@@ -232,7 +232,7 @@ def perform_contrast_stretching(params, img):
         min=params['min'],
         max=params['max']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_adaptive_equalization(params, img):
     process_name = "Adaptive Equalization"
@@ -246,12 +246,12 @@ def perform_adaptive_equalization(params, img):
 def perform_region_leveling(params, img):
     process_name = "Region Leveling"
     result_image = RegionLeveling(img)
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_three_point_leveling(params, img):
     process_name = "Three Point Leveling"
     result_image = ThreePointLeveling(img)
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_gaussian_sharpening(params, img):
     process_name = "Gaussian Sharpening"
@@ -279,7 +279,7 @@ def perform_polynomial_leveling(params, img):
         img=np.array(img),
         order=params['order']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_adaptive_leveling(params, img):
     process_name = "Adaptive Leveling"
@@ -287,7 +287,7 @@ def perform_adaptive_leveling(params, img):
         img=np.array(img),
         disk_size=params['disk_size']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_local_median_filter(params, img):
     process_name = "Local Median Filter"
@@ -295,7 +295,7 @@ def perform_local_median_filter(params, img):
         image=np.array(img),
         size=params['size']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_white_top_hat(params, img):
     process_name = "White Top Hat"
@@ -304,7 +304,7 @@ def perform_white_top_hat(params, img):
         selem_type=params['selem_type'],
         selem_size=params['selem_size']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
 
 def perform_black_top_hat(params, img):
     process_name = "Black Top Hat"
@@ -313,4 +313,4 @@ def perform_black_top_hat(params, img):
         selem_type=params['selem_type'],
         selem_size=params['selem_size']
     )
-    return process_name, result_image
+    return process_name, Image.fromarray(result_image)
