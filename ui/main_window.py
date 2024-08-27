@@ -60,11 +60,12 @@ class MainWindow(Observer):
 
     def bind_callbacks(self):
         self.data_listbox.bind("<<ListboxSelect>>", self.show_data_onDataListboxSelect)
+        self.operations_listbox.bind("<<ListboxSelect>>", self.show_data_onOperationsListboxSelect)
         self.remove_button.config(command=self.on_remove_button_click)
         self.scale_factor_slider.bind("<ButtonRelease-1>", self.update_image_on_rescale_slider_change)
         self.navigation_slider.bind("<B1-Motion>", self.update_image_from_navigation_slider_onChange)
-        self.next_button.config(command=self.navigate_next_onClick)
-        self.prev_button.config(command=self.navigate_prev_onClick)
+        # self.next_button.config(command=self.navigate_next_onClick)
+        # self.prev_button.config(command=self.navigate_prev_onClick)
         self.save_button.config(command=self.save_button_onClick)
     
     def save_button_onClick(self):
@@ -105,10 +106,11 @@ class MainWindow(Observer):
             self.scale_factor_slider
         )
 
-        self.navigation_ui_section, self.navigation_slider, self.prev_button, self.next_button = create_navigation_ui(
+        # self.navigation_ui_section, self.navigation_slider, self.prev_button, self.next_button = create_navigation_ui(
+        self.navigation_ui_section, self.navigation_slider = create_navigation_ui(
             self.root,
-            self.prev_button,
-            self.next_button,
+            # self.prev_button,
+            # self.next_button,
             self.navigation_slider
         )
         
@@ -135,8 +137,8 @@ class MainWindow(Observer):
         self.save_button = None
 
     def setup_navigation_ui_elements(self):
-        self.prev_button = None
-        self.next_button = None
+        # self.prev_button = None
+        # self.next_button = None
         self.navigation_slider = None
 
     def setup_scaling_ui_elements(self):
@@ -172,33 +174,44 @@ class MainWindow(Observer):
             self.selected_item_manager.insert_data(data_model)
             self.navigation_slider.set(index + 1)
     
+    def show_data_onOperationsListboxSelect(self, event=None):
+        selection = self.operations_listbox.curselection()
+        if selection:
+            index = selection[0]
+            img = self.selected_item_manager.selected_item.operations[index].image
+            self.handle_displaying_image_on_canvas(img)
+    
     def update_image_on_rescale_slider_change(self, event=None):
         self.handle_displaying_image_on_canvas(self.selected_item_manager.selected_item.original_image)
 
     def update_image_from_navigation_slider_onChange(self, event):
-        self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[int(self.navigation_slider.get()-1)])
+        idx = int(self.navigation_slider.get()-1)
+        self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[idx])
+        self.data_listbox.selection_clear(0, tk.END)
+        self.data_listbox.selection_set(idx)
 
-    def navigate_prev_onClick(self):
-        try:
-            current_value = self.navigation_slider.get()
-            if current_value > 0:
-                self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[current_value - 1])
-                self.navigation_slider.set(current_value - 1)
-        except ValueError:
-            error_msg = "Invalid current value for navigation slider"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
+    # def navigate_prev_onClick(self):
+    #     try:
+    #         current_value = self.navigation_slider.get()
+    #         current_value = current_value - 1
+    #         if current_value > 0:
+    #             self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[current_value])
+    #             self.navigation_slider.set(current_value)
+    #     except ValueError:
+    #         error_msg = "Invalid current value for navigation slider"
+    #         logger.error(error_msg)
+    #         raise ValueError(error_msg)
 
-    def navigate_next_onClick(self):
-        try:
-            current_value = self.navigation_slider.get()
-            if current_value < len(self.data_manager.data_for_analisys):
-                self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[current_value])
-                self.navigation_slider.set(current_value + 1)
-        except ValueError:
-            error_msg = "Invalid current value for navigation slider"
-            logger.error(error_msg)
-            raise ValueError(error_msg)
+    # def navigate_next_onClick(self):
+    #     try:
+    #         current_value = self.navigation_slider.get()
+    #         if current_value < len(self.data_manager.data_for_analisys):
+    #             self.selected_item_manager.insert_data(self.data_manager.data_for_analisys[current_value])
+    #             self.navigation_slider.set(current_value + 1)
+    #     except ValueError:
+    #         error_msg = "Invalid current value for navigation slider"
+    #         logger.error(error_msg)
+    #         raise ValueError(error_msg)
 
     def handle_displaying_image_on_canvas(self, img, text=None):
         self.canvas.delete("all")
