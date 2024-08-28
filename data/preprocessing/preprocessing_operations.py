@@ -241,7 +241,7 @@ def perform_adaptive_equalization(params, img):
         limit=params['limit']
     )
     image_uint8 = (result_image * 255).astype(np.uint8)
-    return process_name, image_uint8
+    return process_name, Image.fromarray(image_uint8)
 
 def perform_region_leveling(params, img):
     process_name = "Region Leveling"
@@ -261,7 +261,7 @@ def perform_gaussian_sharpening(params, img):
         amount=params['amount']
     )
     image_uint8 = (result_image * 255).astype(np.uint8)
-    return process_name, image_uint8
+    return process_name, Image.fromarray(image_uint8)
 
 def perform_propagation(params, img):
     process_name = "Propagation"
@@ -271,7 +271,7 @@ def perform_propagation(params, img):
         marker_value=params['marker_value']
     )
     image_uint8 = (result_image * 255).astype(np.uint8)
-    return process_name, image_uint8
+    return process_name, Image.fromarray(image_uint8)
 
 def perform_polynomial_leveling(params, img):
     process_name = "Polynomial Leveling"
