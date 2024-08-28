@@ -31,8 +31,13 @@ class FileDataModel(Observable):
         self._labels_names = None
         self._nearest_neighbor_distance = None
         self._nearest_neighbor_name = None
+        self._currently_processing_image = None
 
     # Getters
+    @property  
+    def currently_processing_image(self):
+        return self._currently_processing_image
+
     @property
     def image_for_processing(self):
         return self._image_for_processing
@@ -98,6 +103,11 @@ class FileDataModel(Observable):
         return self._operations
 
     # Property Setters with Notification
+    @currently_processing_image.setter
+    def currently_processing_image(self, value):
+        self._currently_processing_image = value
+        self.notify_observers()
+
     @image_for_processing.setter
     def image_for_processing(self, value):
         self._image_for_processing = value

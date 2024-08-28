@@ -68,12 +68,10 @@ def create_operations_ui(
 
         # Handle radio buttons
         if "radio_buttons" in config:
-            # selected_option_var = tk.StringVar()
             selected_option_var.set(config["radio_buttons"][0][1])  # Set default value
             
             for text, value in config["radio_buttons"]:
-                # radio = tk.Radiobutton(operations_ui_section, text=text, variable=selected_option_var, value=value, command=self.process_and_display_image)
-                radio = tk.Radiobutton(operations_ui_section, text=text, variable=selected_option_var, value=value)
+                radio = tk.Radiobutton(operations_ui_section, text=text, variable=selected_option_var, value=value, command=process_and_display_image)
                 radio.grid(row=row, column=0, padx=5, pady=1, sticky="w")
                 parameter_process_radio.append(radio)
                 row += 1
@@ -87,8 +85,7 @@ def create_operations_ui(
                 
                 slider_config = next((item for item in config.get("sliders", []) if item.get("value") == default_value), {})
                 if slider_config:
-                    # slider = tk.Scale(operations_ui_section, from_=slider_config.get("from_", 0), to=slider_config.get("to", 100), resolution=slider_config.get("resolution", 1), orient=tk.HORIZONTAL, command=self.update_sliders_onChange, length=150)
-                    slider = tk.Scale(operations_ui_section, from_=slider_config.get("from_", 0), to=slider_config.get("to", 100), resolution=slider_config.get("resolution", 1), orient=tk.HORIZONTAL, length=150)
+                    slider = tk.Scale(operations_ui_section, from_=slider_config.get("from_", 0), to=slider_config.get("to", 100), resolution=slider_config.get("resolution", 1), orient=tk.HORIZONTAL, command=update_sliders_onChange, length=150)
                     slider.set(default_value)
                     slider.grid(row=row + 1, column=0, padx=5, pady=2, sticky="w")
                     parameter_process_sliders.append(slider)
@@ -103,8 +100,7 @@ def create_operations_ui(
             label.grid(row=row, column=0, padx=5, pady=1, sticky="w")
             parameter_process_labels[label_text] = label
             
-            # slider = tk.Scale(operations_ui_section, from_=config["slider_config"].get("from_", 0), to=config["slider_config"].get("to", 100), resolution=config["slider_config"].get("resolution", 1), orient=tk.HORIZONTAL, command=self.update_sliders_onChange, length=150)
-            slider = tk.Scale(operations_ui_section, from_=config["slider_config"].get("from_", 0), to=config["slider_config"].get("to", 100), resolution=config["slider_config"].get("resolution", 1), orient=tk.HORIZONTAL, length=150)
+            slider = tk.Scale(operations_ui_section, from_=config["slider_config"].get("from_", 0), to=config["slider_config"].get("to", 100), resolution=config["slider_config"].get("resolution", 1), orient=tk.HORIZONTAL, command=update_sliders_onChange, length=150)
             slider.set(default_value)
             slider.grid(row=row + 1, column=0, padx=5, pady=2, sticky="w")
             parameter_process_sliders.append(slider)
@@ -113,9 +109,19 @@ def create_operations_ui(
 
         # Apply button
         apply_button = tk.Button(operations_ui_section, text="Apply", command=apply_preprocessing_onClick)
-        # apply_button = tk.Button(operations_ui_section, text="Apply")
         apply_button.grid(row=row + 2, column=0, padx=5, pady=5)
         parameter_process_buttons.append(apply_button)
+
+    def update_sliders_onChange(event=None):
+        process_and_display_image() 
+
+    def process_and_display_image():
+        params = {}
+
+        img = selected_item_manager.selected_item.image_for_processing
+        get_values_from_preprocess_menu_items(params)
+        result_image, _ = apply_processing_operation(params, img)
+        selected_item_manager.selected_item.currently_processing_image = result_image
     
     def apply_preprocessing_onClick():
         params = {}
@@ -131,16 +137,7 @@ def create_operations_ui(
 
         selected_item_manager.selected_item.add_operation(operation)
         selected_item_manager.selected_item.image_for_processing = result_image
-
-        # # Refresh data and display processed image
-        # self.refresh_data_in_operations_listbox()
-        # operations_index = self.operations_listbox.size() - 1
-        # self.display_processed_image(operations_index)
-
-        # # Set focus and selection on operations listbox
-        # self.operations_listbox.focus()
-        # self.operations_listbox.selection_set(tk.END)
-        # self.app.update_data(data_for_preprocessing)
+        selected_item_manager.selected_item.currently_processing_image = None
     
     def apply_processing_operation(params, img):
 
