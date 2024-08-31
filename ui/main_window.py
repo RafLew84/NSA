@@ -66,8 +66,11 @@ class MainWindow(Observer):
         self.navigation_slider.bind("<B1-Motion>", self.update_image_from_navigation_slider_onChange)
         self.save_button.config(command=self.save_button_onClick)
         self.move_for_analisys_button.config(command=self.move_for_analisys_button_onClick)
-
+        self.canvas.bind("<Configure>", self.resize_canvas_detection_scrollregion)
         self.selected_measured_image.trace_add('write', self.image_selection_dropdown_onSelect)
+    
+    def resize_canvas_detection_scrollregion(self, event=None):
+        self.canvas.config(scrollregion=self.canvas.bbox("all"))
     
     def move_for_analisys_button_onClick(self):
         current_item = self.selected_item_manager.selected_item
@@ -216,6 +219,7 @@ class MainWindow(Observer):
         else:
             img = self.selected_item_manager.selected_item.currently_processing_image
         self.handle_displaying_image_on_canvas(img)
+        self.resize_canvas_detection_scrollregion()
 
     def update_image_from_navigation_slider_onChange(self, event):
         idx = int(self.navigation_slider.get()-1)

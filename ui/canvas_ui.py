@@ -35,8 +35,11 @@ def create_canvas_ui(
         )
     horizontal_scrollbar_canvas.grid(row=2, column=0, sticky="ew")
     canvas.configure(xscrollcommand=horizontal_scrollbar_canvas.set)
+
+    # def resize_canvas_detection_scrollregion(event=None):
+    #     canvas.config(scrollregion=canvas.bbox("all"))
     
-    # Bind event for canvas resizing
+    # # Bind event for canvas resizing
     # canvas.bind("<Configure>", resize_canvas_detection_scrollregion)
 
     # Configure grid row and column weights to allow Listbox to expand
