@@ -13,13 +13,14 @@ def create_data_ui(
         remove_button, 
         operations_listbox, 
         move_for_analisys_button,
-        find_button
+        find_button,
+        image_selection_dropdown
     ):
     # Create a frame for the data UI section
     data_ui_section = ttk.Frame(root, padding="5")
     data_ui_section.grid(row=0, column=0, rowspan=3, padx=5, pady=2, sticky="nsew")
 
-    measured_image_options = ["Selected", "Original", "Labeled", "Contours", "WContours"]
+    measured_image_options = ["Selected", "Original", "Contours", "WContours"]
 
     selected_measured_image.set(measured_image_options[1])
 
@@ -89,4 +90,4 @@ def create_data_ui(
     data_ui_section.grid_rowconfigure(1, weight=1)  
     # data_ui_section.grid_columnconfigure(0, weight=1)
 
-    return data_ui_section, data_listbox, remove_button, operations_listbox, move_for_analisys_button, find_button
+    return data_ui_section, data_listbox, remove_button, operations_listbox, move_for_analisys_button, find_button, image_selection_dropdown

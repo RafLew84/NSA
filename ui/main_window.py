@@ -65,6 +65,32 @@ class MainWindow(Observer):
         self.scale_factor_slider.bind("<ButtonRelease-1>", self.update_image_on_rescale_slider_change)
         self.navigation_slider.bind("<B1-Motion>", self.update_image_from_navigation_slider_onChange)
         self.save_button.config(command=self.save_button_onClick)
+        self.move_for_analisys_button.config(command=self.move_for_analisys_button_onClick)
+
+        self.selected_measured_image.trace_add('write', self.image_selection_dropdown_onSelect)
+    
+    def move_for_analisys_button_onClick(self):
+        current_item = self.selected_item_manager.selected_item
+        current_item.image_for_analisys = current_item.image_for_processing
+    
+    def image_selection_dropdown_onSelect(self, *args):
+        img = self.display_image()
+        self.handle_displaying_image_on_canvas(img)
+        # print(self.selected_measured_image.get())
+    
+    def display_image(self):
+        item = self.selected_item_manager.selected_item
+        if self.selected_item_manager.selected_item.currently_processing_image:
+            img = self.selected_item_manager.selected_item.currently_processing_image
+        elif self.selected_measured_image.get() == "Selected":
+            img = item.image_for_analisys
+        elif self.selected_measured_image.get() == "Original":
+            img = item.original_image
+        elif self.selected_measured_image.get() == "Contours":
+            img = item.labeled_overlays
+        elif self.selected_measured_image.get() == "WContours":
+            img = item.labeled_overlays_white
+        return img
     
     def save_button_onClick(self):
         print(self.selected_operation.get())
@@ -77,14 +103,15 @@ class MainWindow(Observer):
         self.selected_item_manager.add_observer(self)
 
     def create_ui(self):
-        self.data_ui_section, self.data_listbox, self.remove_button, self.operations_listbox, self.move_for_analisys_button, self.find_button = create_data_ui(
+        self.data_ui_section, self.data_listbox, self.remove_button, self.operations_listbox, self.move_for_analisys_button, self.find_button, self.image_selection_dropdown = create_data_ui(
             self.root, 
             self.selected_measured_image, 
             self.data_listbox, 
             self.remove_button,
             self.operations_listbox,
             self.move_for_analisys_button,
-            self.find_button
+            self.find_button,
+            self.image_selection_dropdown
         )
 
         self.operations_section, self.selected_operation = create_operations_ui(
@@ -153,6 +180,7 @@ class MainWindow(Observer):
         self.operations_listbox = None
         self.move_for_analisys_button = None
         self.find_button = None
+        self.image_selection_dropdown = None
     
     def on_remove_button_click(self):
         self.data_manager.remove_item(self.selected_item_manager.selected_item)
@@ -177,6 +205,7 @@ class MainWindow(Observer):
             self.selected_item_manager.selected_item.currently_processing_image = None
             img = self.selected_item_manager.selected_item.operations[index].image
             self.selected_item_manager.selected_item.image_for_processing = img
+            self.handle_displaying_image_on_canvas(img)
             self.operations_listbox.selection_clear(0, tk.END)
             self.operations_listbox.selection_set(index)
             self.operations_listbox.activate(index)
@@ -251,10 +280,11 @@ class MainWindow(Observer):
         if selected_item:
             self.header_info_label.config(text=selected_item.get_header_string())
             self.refresh_data_in_operations_listbox()
-            if self.selected_item_manager.selected_item.currently_processing_image == None:
-                img = self.selected_item_manager.selected_item.image_for_processing
-            else:
-                img = self.selected_item_manager.selected_item.currently_processing_image
+            # if self.selected_item_manager.selected_item.currently_processing_image == None:
+            #     img = self.selected_item_manager.selected_item.image_for_processing
+            # else:
+            #     img = self.selected_item_manager.selected_item.currently_processing_image
+            img = self.display_image()
             self.handle_displaying_image_on_canvas(img)
             # You can add more UI updates here based on the selected item
 

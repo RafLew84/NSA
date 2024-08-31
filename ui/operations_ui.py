@@ -138,6 +138,7 @@ def create_operations_ui(
         selected_item_manager.selected_item.add_operation(operation)
         selected_item_manager.selected_item.image_for_processing = result_image
         selected_item_manager.selected_item.currently_processing_image = None
+        selected_item_manager.selected_item.image_for_analisys = result_image
     
     def apply_processing_operation(params, img):
 
