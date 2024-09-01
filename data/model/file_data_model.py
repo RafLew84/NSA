@@ -32,8 +32,23 @@ class FileDataModel(Observable):
         self._nearest_neighbor_distance = None
         self._nearest_neighbor_name = None
         self._currently_processing_image = None
+        self._area_px_nm_coefficient = None
+        self._x_px_nm_coefficient = None
+        self._y_px_nm_coefficient = None
 
     # Getters
+    @property
+    def area_px_nm_coefficient(self):
+        return self._area_px_nm_coefficient
+    
+    @property
+    def x_px_nm_coeffixient(self):
+        return self._x_px_nm_coefficient
+    
+    @property
+    def y_px_nm_coefficient(self):
+        return self._y_px_nm_coefficient
+
     @property  
     def currently_processing_image(self):
         return self._currently_processing_image
@@ -103,6 +118,18 @@ class FileDataModel(Observable):
         return self._operations
 
     # Property Setters with Notification
+    @area_px_nm_coefficient.setter
+    def area_px_nm_coefficient(self, value):
+        self._area_px_nm_coefficient = value
+
+    @x_px_nm_coeffixient.setter
+    def x_px_nm_coefficient(self, value):
+        self._x_px_nm_coefficient = value
+
+    @y_px_nm_coefficient.setter
+    def y_px_nm_coefficient(self, value):
+        self._y_px_nm_coefficient = value
+
     @currently_processing_image.setter
     def currently_processing_image(self, value):
         self._currently_processing_image = value

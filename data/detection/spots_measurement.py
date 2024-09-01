@@ -23,6 +23,7 @@ from PIL import Image, ImageTk
 
 
 def label_image(img):
+    img = np.array(img)
     labeled_image = morphology.label(img)
     regions_num = np.max(labeled_image)  # The number of distinct regions (excluding the background)
     names = ["{:03}".format(i) for i in range(1, regions_num + 1)]  # Creating label names for regions
@@ -152,6 +153,7 @@ def overlay_labels_on_original(original_images, labeled_images, label_names, cen
             edges_color = 255
             text_color = (255,255,255)
         # Overlay edges on the original image
+        overlay = np.array(overlay)
         overlay[edges] = edges_color
         
         for label, center in zip(label_name, centroid):

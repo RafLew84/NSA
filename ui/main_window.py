@@ -30,6 +30,11 @@ from ui.canvas_ui import create_canvas_ui
 from ui.scaling_ui import create_scaling_ui
 from ui.navigation_ui import create_navigation_ui
 from ui.show_result_ui import create_show_result_ui
+from data.detection.spots_measurement import (
+    analyze_images,
+    overlay_labels_on_original,
+    overlay_selected_label
+)
 
 from PIL import Image, ImageTk
 
@@ -68,6 +73,43 @@ class MainWindow(Observer):
         self.move_for_analisys_button.config(command=self.move_for_analisys_button_onClick)
         self.canvas.bind("<Configure>", self.resize_canvas_detection_scrollregion)
         self.selected_measured_image.trace_add('write', self.image_selection_dropdown_onSelect)
+        self.find_button.config(command=self.find_button_onClick)
+
+    def find_button_onClick(self):
+        images = []
+        for item in self.data_manager.data_for_analisys:
+            images.append(item.image_for_analisys)
+        
+        all_centrodids, all_areas, all_labels_names, nearest_neighbor_distances_list, nearest_neighbor_names, labeled_images, all_labels_num = analyze_images(images)
+        original_images = []
+        labeled = []
+        labels_names = []
+        centroids = []
+        for i, item in enumerate(self.data_manager.data_for_analisys):
+            original_images.append(item.original_image)
+            labels_names.append(all_labels_names[i])
+            labeled.append(labeled_images[i])
+            centroids.append(all_centrodids[i])
+            item.labeled_image = labeled_images[i]
+            item.areas = all_areas[i] * item.area_px_nm_coefficient
+            item.centroids = all_centrodids[i]
+            item.lables_names = all_labels_names[i]
+            item.nearest_neighbor_distances = nearest_neighbor_distances_list[i] * item.x_px_nm_coefficient # zmienić
+            item.nearest_neighbor_name = nearest_neighbor_names[i]
+        
+        labeled_overlays = overlay_labels_on_original(original_images, labeled, labels_names, centroids)
+        labeled_overlays_white = overlay_labels_on_original(original_images, labeled, labels_names, centroids, 'white')
+
+        for i, item in enumerate(self.data_manager.data_for_analisys):
+            item.labeled_overlays = Image.fromarray(labeled_overlays[i])
+            item.labeled_overlays_white = Image.fromarray(labeled_overlays_white[i])
+        
+        # for i, frame in enumerate(measured_data):
+        #     print(f"frame {frame['name']}")
+        #     for name, area, distance, nname in zip(frame['labels_names'], frame['areas'], frame['nearest_neighbor_distances'], frame['nearest_neighbor_name']):
+        #         print(f"name: {name} - area: {area} - distance: {distance} - neighbor: {nname}")
+        
+        # self.load_data_to_treeview()
     
     def resize_canvas_detection_scrollregion(self, event=None):
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
@@ -79,7 +121,6 @@ class MainWindow(Observer):
     def image_selection_dropdown_onSelect(self, *args):
         img = self.display_image()
         self.handle_displaying_image_on_canvas(img)
-        # print(self.selected_measured_image.get())
     
     def display_image(self):
         item = self.selected_item_manager.selected_item

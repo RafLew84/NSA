@@ -5,6 +5,11 @@ sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 from data.observer.observable import Observable
 from data.model.file_data_model import FileDataModel
 
+from data.file_params import (
+    calculate_avg_nm_per_px,
+    calculate_pixel_to_nm_coefficients
+)
+
 from PIL import Image
 
 import logging
@@ -38,6 +43,8 @@ class DataManager(Observable):
 
     def insert_data(self, file_ext, item):
         # Existing logic for inserting data
+        x_coeff, y_coeff = calculate_pixel_to_nm_coefficients(item['header_info'], file_ext.lower())
+        area_coeff = calculate_avg_nm_per_px(item['header_info'], file_ext.lower())
         if file_ext.lower() == "stp" or file_ext.lower() == "s94":
             filename_only = os.path.basename(item['file_name'])
             data_model = FileDataModel()
@@ -46,6 +53,9 @@ class DataManager(Observable):
             data_model.header_info = item['header_info']
             data_model.data = item['data']
             data_model.original_image = convert_data_to_greyscale_image(item['data'])
+            data_model.area_px_nm_coefficient = area_coeff
+            data_model.x_px_nm_coefficient = x_coeff
+            data_model.y_px_nm_coefficient = y_coeff
             self.data_for_analisys.append(data_model)
         elif file_ext.lower() == "mpp":
             filename_only = os.path.basename(item['file_name'])
@@ -58,6 +68,9 @@ class DataManager(Observable):
                 data_model.header_info = item['header_info']
                 data_model.data = frame
                 data_model.original_image = convert_data_to_greyscale_image(frame)
+                data_model.area_px_nm_coefficient = area_coeff
+                data_model.x_px_nm_coefficient = x_coeff
+                data_model.y_px_nm_coefficient = y_coeff
                 self.data_for_analisys.append(data_model)
         self.notify_observers()
 
