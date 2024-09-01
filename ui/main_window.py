@@ -17,6 +17,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog, messagebox
 
+import numpy as np
+
 from tkinterweb import HtmlFrame 
 
 from data.observer.observer import Observer
@@ -74,6 +76,7 @@ class MainWindow(Observer):
         self.canvas.bind("<Configure>", self.resize_canvas_detection_scrollregion)
         self.selected_measured_image.trace_add('write', self.image_selection_dropdown_onSelect)
         self.find_button.config(command=self.find_button_onClick)
+        self.result_treeview.bind("<<TreeviewSelect>>", self.treeview_onSelect)
 
     def find_button_onClick(self):
         images = []
@@ -93,7 +96,7 @@ class MainWindow(Observer):
             item.labeled_image = labeled_images[i]
             item.areas = all_areas[i] * item.area_px_nm_coefficient
             item.centroids = all_centrodids[i]
-            item.lables_names = all_labels_names[i]
+            item.labels_names = all_labels_names[i]
             item.nearest_neighbor_distances = nearest_neighbor_distances_list[i] * item.x_px_nm_coefficient # zmienić
             item.nearest_neighbor_name = nearest_neighbor_names[i]
         
@@ -104,13 +107,58 @@ class MainWindow(Observer):
             item.labeled_overlays = Image.fromarray(labeled_overlays[i])
             item.labeled_overlays_white = Image.fromarray(labeled_overlays_white[i])
         
-        # for i, frame in enumerate(measured_data):
-        #     print(f"frame {frame['name']}")
-        #     for name, area, distance, nname in zip(frame['labels_names'], frame['areas'], frame['nearest_neighbor_distances'], frame['nearest_neighbor_name']):
-        #         print(f"name: {name} - area: {area} - distance: {distance} - neighbor: {nname}")
-        
-        # self.load_data_to_treeview()
+        self.load_data_to_treeview()
     
+    def load_data_to_treeview(self):
+        # Clear the Treeview widget
+        for item in self.result_treeview.get_children():
+            self.result_treeview.delete(item)
+        # Insert data into the Treeview widget
+        for i, frame in enumerate(self.data_manager.data_for_analisys):
+            frame_id = self.result_treeview.insert("", "end", text=frame.data_name, open=True)
+            for name, area, distance, nname in zip(frame.labels_names, frame.areas, frame.nearest_neighbor_distances, frame.nearest_neighbor_name):
+                formatted_area = f"{area:.3f}"
+                formatted_distance = f"{distance:.3f}"
+                self.result_treeview.insert(frame_id, "end", values=(name, formatted_area, formatted_distance, nname))
+    
+    def treeview_onSelect(self, event=None):
+        # Callback function for when an item is selected
+        selected_item = self.result_treeview.selection()[0]
+        item = self.result_treeview.item(selected_item)
+        
+        # Navigate up to get the parent frame if a child item is selected
+        parent_item = self.result_treeview.parent(selected_item)
+        if parent_item:
+            frame_name = self.result_treeview.item(parent_item)['text']
+        else:
+            frame_name = item['text']
+
+        selected_data = []
+        
+        for data in self.data_manager.data_for_analisys:
+            if data.data_name == frame_name:
+                selected_data = data
+        
+        # print(selected_data)
+        if item['values']:
+            index = item['values'][0] - 1
+            original_image = selected_data.original_image
+            labeled_image = selected_data.labeled_image
+            lebels_names = selected_data.labels_names
+            centroids = selected_data.centroids
+
+            image_data = overlay_selected_label(
+                original_image=np.array(original_image),
+                labeled_image=labeled_image,
+                label_names=lebels_names,
+                centroids=centroids,
+                index=index,
+                label_colors=self.checkbox_color_var.get()
+            )
+
+            img = Image.fromarray(image_data)
+            self.handle_displaying_image_on_canvas(img)
+
     def resize_canvas_detection_scrollregion(self, event=None):
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
     
@@ -181,8 +229,9 @@ class MainWindow(Observer):
             self.navigation_slider
         )
         
-        self.result_ui_section, self.checkbox_color_var, self.result_treeview, self.delete_button, self.save_button = create_show_result_ui(
+        self.result_ui_section, self.checkbox_color_var, self.checkbox, self.result_treeview, self.delete_button, self.save_button = create_show_result_ui(
             self.root,
+            self.checkbox,
             self.checkbox_color_var,
             self.result_treeview,
             self.delete_button,
@@ -199,6 +248,7 @@ class MainWindow(Observer):
 
     def setup_results_ui_elements(self):
         self.checkbox_color_var = tk.IntVar()
+        self.checkbox = None
         self.result_treeview = None
         self.delete_button = None
         self.save_button = None

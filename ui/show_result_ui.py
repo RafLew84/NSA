@@ -8,6 +8,7 @@ from tkinter import ttk
 
 def create_show_result_ui(
     root,
+    checkbox,
     checkbox_color_var,
     result_treeview,
     delete_button,
@@ -58,4 +59,4 @@ def create_show_result_ui(
 
     result_ui_section.grid_rowconfigure(0, weight=1)  
 
-    return result_ui_section, checkbox_color_var, result_treeview, delete_button, save_button
+    return result_ui_section, checkbox_color_var, checkbox, result_treeview, delete_button, save_button
