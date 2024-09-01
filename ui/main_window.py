@@ -37,6 +37,7 @@ from data.detection.spots_measurement import (
     overlay_labels_on_original,
     overlay_selected_label
 )
+from data.save_data import save_measured_data
 
 from PIL import Image, ImageTk
 
@@ -185,7 +186,9 @@ class MainWindow(Observer):
         return img
     
     def save_button_onClick(self):
-        print(self.selected_operation.get())
+        folder_selected = filedialog.askdirectory()
+        if folder_selected:
+            save_measured_data(folder_selected)
 
     def setup_observers(self):
         self.data_manager = DataManager()
