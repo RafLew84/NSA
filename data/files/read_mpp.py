@@ -1,15 +1,17 @@
-import os, sys
-
-sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
-
 # -*- coding: utf-8 -*-
 """
 Read .mpp file.
 
 This module contains a function to read data from a .mpp file.
 
-@author: rlewandkow
+@author
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
+
+import os, sys
+
+sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
+
 import numpy as np
 import struct
 import re
@@ -26,6 +28,10 @@ def read_mpp_file(file_name):
 
     Returns:
         dict: A dictionary containing the file name, header information, data array, and header length.
+
+    Raises:
+        ValueError: If the file is invalid or contains incorrect data.
+        FileNotFoundError: If the specified file is not found.
     """
     if not isinstance(file_name, str):
         msg = "read_mpp_file: Invalid input. filename must be strings."

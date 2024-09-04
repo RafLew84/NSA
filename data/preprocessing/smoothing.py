@@ -2,7 +2,10 @@
 """
 Smoothing functions
 
+This module provides functions for applying various smoothing techniques to images.
+
 @author
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 import os, sys
@@ -17,7 +20,10 @@ import numpy as np
 
 import logging
 
+# Configure logging
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG,  # Set to DEBUG level for detailed logging
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 def GaussianBlur(img, sigmaX=5, sigmaY=5, borderType=0):
     """
@@ -31,6 +37,10 @@ def GaussianBlur(img, sigmaX=5, sigmaY=5, borderType=0):
 
     Returns:
         numpy.ndarray: Blurred image.
+
+    Raises:
+        ValueError: If sigmaX or sigmaY are not positive odd numbers.
+        Exception: If any error occurs during the blurring process.
     """
     try:
         if sigmaX <= 0 or sigmaX % 2 == 0:
@@ -50,7 +60,7 @@ def GaussianBlur(img, sigmaX=5, sigmaY=5, borderType=0):
     
 def GaussianFilter(img, sigma=4):
     """
-    Apply Gaussian filter to the input image.
+    Apply a Gaussian filter to the input image.
 
     Args:
         img (numpy.ndarray): Input image.
@@ -58,6 +68,9 @@ def GaussianFilter(img, sigma=4):
 
     Returns:
         numpy.ndarray: Filtered image.
+
+    Raises:
+        Exception: If any error occurs during the filtering process.
     """
     try:
         gaussian_image = ndi.gaussian_filter(
@@ -72,11 +85,30 @@ def GaussianFilter(img, sigma=4):
     
 
 def LocalMedianFilter(image, size=5):
-    image = img_as_float(image)
-    """Apply median filter to smooth the background."""
-    smoothed_image = median_filter(image, size=size)
+    """
+    Apply a local median filter to smooth the background of the image.
 
-    leveled_image_normalized = cv2.normalize(smoothed_image, None, 0, 255, cv2.NORM_MINMAX)
-    leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+    Args:
+        image (numpy.ndarray): Input image.
+        size (int, optional): Size of the filter. Defaults to 5.
 
-    return leveled_image_normalized
+    Returns:
+        numpy.ndarray: Smoothed and normalized image.
+
+    Raises:
+        Exception: If any error occurs during the filtering process.
+    """
+    try:
+        image = img_as_float(image)
+        """Apply median filter to smooth the background."""
+        smoothed_image = median_filter(image, size=size)
+
+        leveled_image_normalized = cv2.normalize(smoothed_image, None, 0, 255, cv2.NORM_MINMAX)
+        leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+
+        return leveled_image_normalized
+    
+    except Exception as e:
+        msg = f"LocalMedianFilter error: {e}"
+        logger.error(msg)
+        raise ValueError(msg)

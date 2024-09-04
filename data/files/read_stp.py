@@ -4,7 +4,8 @@ Read .stp file.
 
 This module contains a function to read data from a .stp file.
 
-@author: rlewandkow
+@author
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 import os, sys
@@ -17,6 +18,9 @@ import numpy as np
 import logging
 
 logger = logging.getLogger(__name__)
+if not logger.hasHandlers():
+    logging.basicConfig(level=logging.DEBUG,  # Set default logging level to DEBUG
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 def read_stp_file(file_name):
     """
@@ -27,6 +31,10 @@ def read_stp_file(file_name):
 
     Returns:
         dict: A dictionary containing the file name, header information, and data array.
+
+    Raises:
+        ValueError: If the file is invalid or contains incorrect data.
+        FileNotFoundError: If the specified file is not found.
     """
     
     if not isinstance(file_name, str):
@@ -95,10 +103,12 @@ def read_stp_file(file_name):
 
 def main():
     file_name = "test_files/t/ISETmap/28933_I-ISET.stp"
-    f = read_stp_file(file_name)
-    if f:
-        print("Pop")
-        print(sum(sum(f['data'])))
+    try:
+        result = read_stp_file(file_name)
+        if result:
+            print("Sum of data values:", np.sum(result['data']))
+    except Exception as e:
+        print(f"Error: {e}")
 
 if __name__ == '__main__':
     main()

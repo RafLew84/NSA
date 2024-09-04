@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Data model for STM files data
+Data model for STM files data.
+
+This module defines the `FileDataModel` class, which holds and manages data for STM files.
 
 @author
-rlewandkow
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 import os, sys
@@ -13,7 +15,16 @@ sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 from data.observer.observable import Observable
 
 class FileDataModel(Observable):
+    """
+    A data model for handling STM file data. 
+
+    Attributes:
+        Various properties related to the STM data, including image processing and operations.
+    """
     def __init__(self):
+        """
+        Initialize the FileDataModel instance with default values.
+        """
         super().__init__()  # Call the Observable's constructor
         self._data_name = None
         self._file_name = None
@@ -42,7 +53,7 @@ class FileDataModel(Observable):
         return self._area_px_nm_coefficient
     
     @property
-    def x_px_nm_coeffixient(self):
+    def x_px_nm_coefficient(self):
         return self._x_px_nm_coefficient
     
     @property
@@ -122,7 +133,7 @@ class FileDataModel(Observable):
     def area_px_nm_coefficient(self, value):
         self._area_px_nm_coefficient = value
 
-    @x_px_nm_coeffixient.setter
+    @x_px_nm_coefficient.setter
     def x_px_nm_coefficient(self, value):
         self._x_px_nm_coefficient = value
 
@@ -220,15 +231,39 @@ class FileDataModel(Observable):
         self.notify_observers()
 
     def get_operation(self, index):
+        """
+        Get an operation by index.
+
+        Args:
+            index (int): The index of the operation to retrieve.
+
+        Returns:
+            The operation at the given index.
+
+        Raises:
+            IndexError: If the index is out of range.
+        """
         if 0 <= index < len(self._operations):
             return self._operations[index]
         else:
             raise IndexError("Index out of range")
 
     def get_all_operations(self):
+        """
+        Get a copy of all operations.
+
+        Returns:
+            list: A list of all operations.
+        """
         return self._operations[:]
     
     def get_header_string(self):
+        """
+        Generate a header string based on the file type.
+
+        Returns:
+            str: A formatted string containing header information.
+        """
         header_labels_generator = {
             "s94": self.get_s94_labels,
             "stp": self.get_stp_labels,
@@ -240,6 +275,12 @@ class FileDataModel(Observable):
             return header_labels_func()
     
     def get_s94_labels(self):
+        """
+        Generate header labels for S94 files.
+
+        Returns:
+            str: A formatted string with S94 file header information.
+        """
         header = [
             f"X Amplitude: {self.header_info.get('x_size', ''):.2f} nm",
             f"Y Amplitude: {self.header_info.get('y_size', ''):.2f} nm",
@@ -253,6 +294,12 @@ class FileDataModel(Observable):
         return f"Filename: {self.data_name}  {header[0]}  {header[1]}\n{header[2]}  {header[3]}"
 
     def get_mpp_labels(self):
+        """
+        Generate header labels for MPP files.
+
+        Returns:
+            str: A formatted string with MPP file header information.
+        """
         header = [
             f'X Amplitude: {float(self.header_info.get("Control", {}).get("X Amplitude", "")[:-3]):.2f} nm',
             f'Y Amplitude: {float(self.header_info.get("Control", {}).get("Y Amplitude", "")[:-3]):.2f} nm',
@@ -268,6 +315,12 @@ class FileDataModel(Observable):
         return f"Filename: {filename} Frame: {self.frame_number}  {header[0]}\n{header[1]}  {header[2]}  {header[3]}"
 
     def get_stp_labels(self):
+        """
+        Generate header labels for STP files.
+
+        Returns:
+            str: A formatted string with STP file header information.
+        """
         header = [
             f"X Amplitude: {float(self.header_info.get('X Amplitude', '')[:-3]):.2f} nm",
             f"Y Amplitude: {float(self.header_info.get('Y Amplitude', '')[:-3]):.2f} nm",

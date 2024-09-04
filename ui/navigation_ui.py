@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+This module creates ui for navigation in app
+
+Author:
+- Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
+"""
+
 import os, sys
 
 sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
@@ -6,31 +14,43 @@ import tkinter as tk
 
 from tkinter import ttk
 
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG,  # Set to DEBUG level for detailed logging
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 def create_navigation_ui(
         root,
-        # prev_button,
-        # next_button,
         navigation_slider
 ):
-    navigation_ui_section = ttk.Frame(root, padding="5")
-    navigation_ui_section.grid(row=2, column=2, padx=5, pady=2, sticky="nsew")
-    # Slider for navigation
-    navigation_slider = tk.Scale(
-        navigation_ui_section, 
-        from_=1, 
-        to=1, 
-        orient=tk.HORIZONTAL
-        # command=self.update_image_from_navigation_slider_onChange
-        )
-    navigation_slider.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+    """
+    Create the navigation UI section with a slider for navigating through images.
 
-    # Navigation buttons
-    # prev_button = tk.Button(navigation_ui_section, text="Prev")
-    # prev_button.grid(row=0, column=0, padx=5, pady=5)
-    # next_button = tk.Button(navigation_ui_section, text="Next")
-    # next_button.grid(row=0, column=2, padx=5, pady=5)
+    Args:
+        root (tk.Tk): The root Tkinter window.
+        navigation_slider (tk.Scale): The navigation slider for image navigation.
 
-    navigation_ui_section.grid_columnconfigure(1, weight=1)
+    Returns:
+        tuple: A tuple containing the navigation UI section frame and the navigation slider.
+    """
+    try:
+        navigation_ui_section = ttk.Frame(root, padding="5")
+        navigation_ui_section.grid(row=2, column=2, padx=5, pady=2, sticky="nsew")
+        # Slider for navigation
+        navigation_slider = tk.Scale(
+            navigation_ui_section, 
+            from_=1, 
+            to=1, 
+            orient=tk.HORIZONTAL
+            )
+        navigation_slider.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
-    # return navigation_ui_section, navigation_slider, prev_button, next_button
-    return navigation_ui_section, navigation_slider
+        navigation_ui_section.grid_columnconfigure(1, weight=1)
+
+        return navigation_ui_section, navigation_slider
+    
+    except Exception as e:
+        logger.error(f"Error creating navigation UI: {e}")
+        tk.messagebox.showerror("Error", f"Failed to create navigation UI: {e}")

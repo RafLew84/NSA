@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+This module creates the top menu with File and About options.
+
+Author:
+- Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
+"""
+
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
@@ -13,6 +21,13 @@ from data.files.read_s94 import read_s94_file
 from data.files.read_stp import read_stp_file
 
 from data.data_manager import DataManager
+
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG,  # Set to DEBUG level for detailed logging
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 def create_menu(root):
     """
@@ -61,6 +76,9 @@ def create_menu(root):
 def select_folder(filetype):
     """
     Handle the 'Select Folder' action for different file types.
+
+    Args:
+        filetype (str): The type of file to filter for selection (e.g., 'mpp', 'stp', 's94').
     """
     data_manager = DataManager()
     folder_selected = filedialog.askdirectory(title=f"Select Folder for {filetype} files")
@@ -75,6 +93,12 @@ def select_folder(filetype):
         )
 
 def open_file(filetype):
+    """
+    Handle the 'Open File' action for different file types.
+
+    Args:
+        filetype (str): The type of file to filter for opening (e.g., 'mpp', 'stp', 's94').
+    """
     data_manager = DataManager()
     file_types = [(f"{filetype.upper()} Files", f"*.{filetype}"), ("All Files", "*.*")]
     files_selected = filedialog.askopenfilenames(title=f"Open {filetype.upper()} File(s)", filetypes=file_types)
@@ -91,11 +115,14 @@ def show_about():
     """
     Show information about the application.
     """
-    messagebox.showinfo("About NanoSurface Analyzer", "NanoSurface Analyzer v1.0\nDeveloped by Your Name")
+    messagebox.showinfo("About NanoSurface Analyzer", "NEtCAT NanoSurface Analyzer v1.0\nDeveloped by Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)\n netcat.uwr.edu.pl")
 
 def show_docs(root):
     """
-    Display Markdown documentation in a new window.
+    Display HTML documentation in a new window.
+
+    Args:
+        root (tk.Tk): The root Tkinter window.
     """
     # Create a new window for the documentation
     docs_window = tk.Toplevel(root)
@@ -114,10 +141,26 @@ def show_docs(root):
     html_frame.load_html(html_content)
 
 def read_file(file_path, file_type):
-    """Read the file based on its type."""
-    if file_type == "s94":
-        return read_s94_file(file_path)
-    elif file_type == "stp":
-        return read_stp_file(file_path)
-    elif file_type == "mpp":
-        return read_mpp_file(file_path)
+    """
+    Read the file based on its type.
+
+    Args:
+        file_path (str): The path to the file to be read.
+        file_type (str): The type of the file ('s94', 'stp', 'mpp').
+
+    Returns:
+        Object: The content of the file based on its type.
+    """
+    try:
+        if file_type == "s94":
+            return read_s94_file(file_path)
+        elif file_type == "stp":
+            return read_stp_file(file_path)
+        elif file_type == "mpp":
+            return read_mpp_file(file_path)
+        else:
+            raise ValueError(f"Unsupported file type: {file_type}")
+        
+    except Exception as e:
+        logger.error(f"Error reading {file_type} file: {e}")
+        messagebox.showerror("Error", f"Failed to read {file_type} file: {e}")

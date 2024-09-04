@@ -2,38 +2,107 @@
 """
 Stores default values for preprocess tab.
 
+This script defines default parameter values for various image preprocessing methods,
+which can be used in a GUI or an application for image processing.
+
 @author
-rlewandkow
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
-import os, sys
+import os
+import sys
 
+# Modify the Python path to include the parent directory of the script, allowing for module imports.
 sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 
-# Parameters for image preprocessing methods
+# Dictionary storing default parameters for different preprocessing techniques.
+# Each key represents a preprocessing method, and its corresponding value is a dictionary
+# containing the relevant parameters and their default values.
 preprocess_params = {
-    "Gaussian Blur": {"sigmaX": 5, "sigmaY": 5},
-    "Non-local Mean Denoising": {"h": 3, "searchWindowSize": 21, "templateWindowSize": 7},
-    "GaussianFilter": {"sigma": 4},
-    "Erosion": {"kernel_type": "re", "kernel_size": 5, "iterations": 1},
-    "Binary Greyscale Erosion": {"kernel_type": "re", "kernel_size": 3},
+    "Gaussian Blur": {"sigmaX": 5, "sigmaY": 5},  # Gaussian blur with specified sigma values for X and Y axes.
+    
+    "Non-local Mean Denoising": {
+        "h": 3,  # Filter strength for noise removal.
+        "searchWindowSize": 21,  # Size of the search window.
+        "templateWindowSize": 7  # Size of the template patch.
+    },
+    
+    "GaussianFilter": {"sigma": 4},  # Gaussian filter with specified sigma.
+    
+    "Erosion": {
+        "kernel_type": "re",  # Type of kernel (rectangular).
+        "kernel_size": 5,     # Size of the kernel.
+        "iterations": 1       # Number of iterations for erosion.
+    },
+    
+    "Binary Greyscale Erosion": {
+        "kernel_type": "re",  # Type of kernel (rectangular).
+        "kernel_size": 3      # Size of the kernel for binary greyscale erosion.
+    },
+    
+    # Gaussian Greyscale Erosion parameters can be added as needed.
     # "Gaussian Greyscale Erosion": {"mask_size": 3, "sigma": 1.0},
-    "Binary Greyscale Dilation": {"kernel_type": "re", "kernel_size": 3},
+
+    "Binary Greyscale Dilation": {
+        "kernel_type": "re",  # Type of kernel (rectangular).
+        "kernel_size": 3      # Size of the kernel for binary greyscale dilation.
+    },
+    
+    # Gaussian Greyscale Dilation parameters can be added as needed.
     # "Gaussian Greyscale Dilation": {"mask_size": 3, "sigma": 1.0},
-    "Binary Greyscale Opening": {"kernel_type": "re", "kernel_size": 3},
+
+    "Binary Greyscale Opening": {
+        "kernel_type": "re",  # Type of kernel (rectangular).
+        "kernel_size": 3      # Size of the kernel for binary greyscale opening.
+    },
+    
+    # Gaussian Greyscale Opening parameters can be added as needed.
     # "Gaussian Greyscale Opening": {"mask_size": 3, "sigma": 1.0},
-    "Binary Greyscale Closing": {"kernel_type": "re", "kernel_size": 3},
+
+    "Binary Greyscale Closing": {
+        "kernel_type": "re",  # Type of kernel (rectangular).
+        "kernel_size": 3      # Size of the kernel for binary greyscale closing.
+    },
+    
+    # Gaussian Greyscale Closing parameters can be added as needed.
     # "Gaussian Greyscale Closing": {"mask_size": 3, "sigma": 1.0},
-    "Gamma Adjustment": {"gamma": 3.5},
-    "Contrast Stretching": {"min": 2, "max": 98},
-    "Adaptive Equalization": {"limit": 0.03},
-    "Region Leveling": {},
-    "Three Point Leveling": {},
-    "Gaussian Sharpening": {"radius": 1.0, "amount": 1.0},
-    "Propagation": {"type": "dilation", "marker_value": 0.3},
-    "Polynomial Leveling": {"order": 3},
-    "Adaptive Leveling": {"disk_size": 5},
-    "Local Median Filter": {"size": 5},
-    "White Top Hat": {"selem_type": "disk", "selem_size": 12},
-    "Black Top Hat": {"selem_type": "disk", "selem_size": 12}
+
+    "Gamma Adjustment": {"gamma": 3.5},  # Gamma correction with specified gamma value.
+    
+    "Contrast Stretching": {
+        "min": 2,  # Minimum percentile for contrast stretching.
+        "max": 98  # Maximum percentile for contrast stretching.
+    },
+    
+    "Adaptive Equalization": {"limit": 0.03},  # Limit for contrast clipping in adaptive equalization.
+    
+    "Region Leveling": {},  # No parameters defined, uses default settings.
+    
+    "Three Point Leveling": {},  # No parameters defined, uses default settings.
+    
+    "Gaussian Sharpening": {
+        "radius": 1.0,  # Radius for Gaussian sharpening.
+        "amount": 1.0   # Amount of sharpening to apply.
+    },
+    
+    "Propagation": {
+        "type": "dilation",     # Type of propagation (dilation).
+        "marker_value": 0.3     # Marker value used in the propagation process.
+    },
+    
+    "Polynomial Leveling": {"order": 3},  # Polynomial leveling with specified order.
+    
+    "Adaptive Leveling": {"disk_size": 5},  # Disk size for adaptive leveling.
+    
+    "Local Median Filter": {"size": 5},  # Size of the filter for local median filtering.
+    
+    "White Top Hat": {
+        "selem_type": "disk",  # Type of structuring element (disk).
+        "selem_size": 12       # Size of the structuring element for white top-hat transformation.
+    },
+    
+    "Black Top Hat": {
+        "selem_type": "disk",  # Type of structuring element (disk).
+        "selem_size": 12       # Size of the structuring element for black top-hat transformation.
+    }
 }

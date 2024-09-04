@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Configuration options for preproces.
+Configuration options for preprocessing and processing image data.
 
-@author
-rlewandkow
+This module contains configuration settings for various preprocessing and processing
+operations applied to image data. It includes default parameter values, options for
+UI elements (like sliders and radio buttons), and mappings of operations to their
+respective functions.
+
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 import os, sys
@@ -56,6 +60,13 @@ from data.processing.processing_operations import (
     perform_manual_white_remove,
     perform_binary_threshold
 )
+
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG,  # Set to DEBUG level for detailed logging
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 options_config = {
     "GaussianFilter": {

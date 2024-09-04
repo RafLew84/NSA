@@ -3,6 +3,7 @@
 Leveling functions
 
 @author
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 import os, sys
@@ -17,167 +18,273 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 from skimage.morphology import disk, opening
 
+import logging
+
+logger = logging.getLogger(__name__)
+# Configure logging for the entire application (if not configured elsewhere)
+logging.basicConfig(level=logging.DEBUG,  # Set to DEBUG level for detailed logging
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 def fit_plane(image, region=None):
-    rows, cols = image.shape
-    
-    # If a region is specified, use that region for fitting
-    if region is not None:
-        x_start, y_start, width, height = region
-        x_end = x_start + width
-        y_end = y_start + height
-        image_region = image[y_start:y_end, x_start:x_end]
+    """
+    Fit a plane to the image or a specified region of the image.
+
+    Parameters:
+    - image: 2D numpy array representing the image.
+    - region: Optional tuple (x_start, y_start, width, height) specifying the region to fit the plane.
+
+    Returns:
+    - fitted_plane: 2D numpy array representing the fitted plane.
+    """
+    try:
+        rows, cols = image.shape
         
-        X_region, Y_region = np.meshgrid(np.arange(x_start, x_end), np.arange(y_start, y_end))
-        X_flat = X_region.flatten()
-        Y_flat = Y_region.flatten()
-        Z_flat = image_region.flatten()
-    else:
-        # Use the whole image
+        # If a region is specified, use that region for fitting
+        if region is not None:
+            x_start, y_start, width, height = region
+            x_end = x_start + width
+            y_end = y_start + height
+            image_region = image[y_start:y_end, x_start:x_end]
+            
+            X_region, Y_region = np.meshgrid(np.arange(x_start, x_end), np.arange(y_start, y_end))
+            X_flat = X_region.flatten()
+            Y_flat = Y_region.flatten()
+            Z_flat = image_region.flatten()
+        else:
+            # Use the whole image
+            X, Y = np.meshgrid(np.arange(cols), np.arange(rows))
+            X_flat = X.flatten()
+            Y_flat = Y.flatten()
+            Z_flat = image.flatten()
+
+        # Define the function to fit the plane
+        def plane(params, x, y, z):
+            a, b, c = params
+            return a*x + b*y + c - z
+
+        # Initial guess for the plane parameters
+        initial_guess = [0, 0, np.mean(Z_flat)]
+
+        # Perform least squares fitting
+        result = least_squares(plane, initial_guess, args=(X_flat, Y_flat, Z_flat))
+
+        # Get the fitted plane parameters
+        a, b, c = result.x
+        print(f'Plane parameters: a={a}, b={b}, c={c}')
+
+        # Create the fitted plane for the whole image
         X, Y = np.meshgrid(np.arange(cols), np.arange(rows))
-        X_flat = X.flatten()
-        Y_flat = Y.flatten()
-        Z_flat = image.flatten()
+        fitted_plane = a * X + b * Y + c
 
-    # Define the function to fit the plane
-    def plane(params, x, y, z):
-        a, b, c = params
-        return a*x + b*y + c - z
-
-    # Initial guess for the plane parameters
-    initial_guess = [0, 0, np.mean(Z_flat)]
-
-    # Perform least squares fitting
-    result = least_squares(plane, initial_guess, args=(X_flat, Y_flat, Z_flat))
-
-    # Get the fitted plane parameters
-    a, b, c = result.x
-    print(f'Plane parameters: a={a}, b={b}, c={c}')
-
-    # Create the fitted plane for the whole image
-    X, Y = np.meshgrid(np.arange(cols), np.arange(rows))
-    fitted_plane = a * X + b * Y + c
-
-    return fitted_plane
+        return fitted_plane
+    
+    except Exception as e:
+        logger.error(f"Error in fit_plane: {e}")
+        raise
 
 def RegionLeveling(img):
-    image = np.array(img)
+    """
+    Perform image leveling by fitting and subtracting a plane from a selected region.
 
-    # Display the original image for ROI selection
-    cv2.imshow("Select ROI", image)
-    roi = cv2.selectROI("Select ROI", image, fromCenter=False, showCrosshair=True)
-    cv2.destroyAllWindows()
+    Parameters:
+    - img: 2D numpy array representing the image.
 
-    # Check if ROI is selected, if not use the whole image
-    if roi != (0, 0, 0, 0):
-        region = roi
-    else:
-        region = None
+    Returns:
+    - leveled_image_normalized: 2D numpy array representing the leveled image.
+    """
+    try:
+        image = np.array(img)
 
-    # Fit the plane
-    fitted_plane = fit_plane(image, region)
+        # Display the original image for ROI selection
+        cv2.imshow("Select ROI", image)
+        roi = cv2.selectROI("Select ROI", image, fromCenter=False, showCrosshair=True)
+        cv2.destroyAllWindows()
 
-    # Subtract the fitted plane from the original image
-    leveled_image = image - fitted_plane
-    leveled_image_normalized = cv2.normalize(leveled_image, None, 0, 255, cv2.NORM_MINMAX)
-    leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+        # Check if ROI is selected, if not use the whole image
+        if roi != (0, 0, 0, 0):
+            region = roi
+        else:
+            region = None
 
-    return leveled_image_normalized
+        # Fit the plane
+        fitted_plane = fit_plane(image, region)
+
+        # Subtract the fitted plane from the original image
+        leveled_image = image - fitted_plane
+        leveled_image_normalized = cv2.normalize(leveled_image, None, 0, 255, cv2.NORM_MINMAX)
+        leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+
+        return leveled_image_normalized
+    
+    except Exception as e:
+        logger.error(f"Error in RegionLeveling: {e}")
+        raise
 
 def ThreePointLeveling(img):
+    """
+    Perform image leveling by fitting and subtracting a plane defined by three user-selected points.
 
-    image = np.array(img)
+    Parameters:
+    - img: 2D numpy array representing the image.
 
-    # Callback function to capture the points clicked by the user
-    def click_event(event, x, y, flags, params):
-        if event == cv2.EVENT_LBUTTONDOWN:
-            points.append((x, y))
-            cv2.circle(image_display, (x, y), 5, (255, 0, 0), -1)
-            cv2.imshow("Select three points to define a plane", image_display)
-            if len(points) == 3:
-                cv2.destroyAllWindows()
+    Returns:
+    - leveled_image_normalized: 2D numpy array representing the leveled image.
+    """
+    try:
+        image = np.array(img)
 
-    image_display = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+        # Callback function to capture the points clicked by the user
+        def click_event(event, x, y, flags, params):
+            if event == cv2.EVENT_LBUTTONDOWN:
+                points.append((x, y))
+                cv2.circle(image_display, (x, y), 5, (255, 0, 0), -1)
+                cv2.imshow("Select three points to define a plane", image_display)
+                if len(points) == 3:
+                    cv2.destroyAllWindows()
 
-    # Display the image and set up the callback for capturing points
-    points = []
-    cv2.imshow("Select three points to define a plane", image_display)
-    cv2.setMouseCallback("Select three points to define a plane", click_event)
-    cv2.waitKey(0)
+        image_display = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
 
-    # Ensure three points are selected
-    if len(points) != 3:
-        raise ValueError("You must select exactly three points.")
+        # Display the image and set up the callback for capturing points
+        points = []
+        cv2.imshow("Select three points to define a plane", image_display)
+        cv2.setMouseCallback("Select three points to define a plane", click_event)
+        cv2.waitKey(0)
 
-    # Extract the coordinates of the selected points
-    (x1, y1), (x2, y2), (x3, y3) = points
+        # Ensure three points are selected
+        if len(points) != 3:
+            raise ValueError("You must select exactly three points.")
 
-    # Get the pixel values at the selected points
-    z1 = image[y1, x1]
-    z2 = image[y2, x2]
-    z3 = image[y3, x3]
+        # Extract the coordinates of the selected points
+        (x1, y1), (x2, y2), (x3, y3) = points
 
-    # Create matrices to solve for plane coefficients
-    A = np.array([[x1, y1, 1], [x2, y2, 1], [x3, y3, 1]])
-    B = np.array([z1, z2, z3])
+        # Get the pixel values at the selected points
+        z1 = image[y1, x1]
+        z2 = image[y2, x2]
+        z3 = image[y3, x3]
 
-    # Solve for plane coefficients
-    plane_params = np.linalg.solve(A, B)
-    a, b, c = plane_params
-    print(f'Plane parameters: a={a}, b={b}, c={c}')
+        # Create matrices to solve for plane coefficients
+        A = np.array([[x1, y1, 1], [x2, y2, 1], [x3, y3, 1]])
+        B = np.array([z1, z2, z3])
 
-    # Create the fitted plane for the whole image
-    rows, cols = image.shape
-    X, Y = np.meshgrid(np.arange(cols), np.arange(rows))
-    fitted_plane = a * X + b * Y + c
+        # Solve for plane coefficients
+        plane_params = np.linalg.solve(A, B)
+        a, b, c = plane_params
+        print(f'Plane parameters: a={a}, b={b}, c={c}')
 
-    # Subtract the fitted plane from the original image
-    leveled_image = image - fitted_plane
+        # Create the fitted plane for the whole image
+        rows, cols = image.shape
+        X, Y = np.meshgrid(np.arange(cols), np.arange(rows))
+        fitted_plane = a * X + b * Y + c
 
-    leveled_image_normalized = cv2.normalize(leveled_image, None, 0, 255, cv2.NORM_MINMAX)
-    leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+        # Subtract the fitted plane from the original image
+        leveled_image = image - fitted_plane
 
-    return leveled_image_normalized
+        leveled_image_normalized = cv2.normalize(leveled_image, None, 0, 255, cv2.NORM_MINMAX)
+        leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+
+        return leveled_image_normalized
+    
+    except Exception as e:
+        logger.error(f"Error in ThreePointLeveling: {e}")
+        raise
 
 def fit_polynomial_surface(image, order=3):
-    """Fit a polynomial surface to the image."""
-    m, n = image.shape
-    Y, X = np.mgrid[:m, :n]
-    X = X.flatten()
-    Y = Y.flatten()
-    Z = image.flatten()
+    """
+    Fit a polynomial surface to the image.
 
-    poly = PolynomialFeatures(degree=order)
-    X_poly = poly.fit_transform(np.column_stack((X, Y)))
+    Parameters:
+    - image: 2D numpy array representing the image.
+    - order: Integer specifying the order of the polynomial.
 
-    model = LinearRegression()
-    model.fit(X_poly, Z)
-    Z_poly = model.predict(X_poly)
+    Returns:
+    - fitted_surface: 2D numpy array representing the fitted polynomial surface.
+    """
+    try:
+        m, n = image.shape
+        Y, X = np.mgrid[:m, :n]
+        X = X.flatten()
+        Y = Y.flatten()
+        Z = image.flatten()
 
-    fitted_surface = Z_poly.reshape(m, n)
-    return fitted_surface
+        poly = PolynomialFeatures(degree=order)
+        X_poly = poly.fit_transform(np.column_stack((X, Y)))
+
+        model = LinearRegression()
+        model.fit(X_poly, Z)
+        Z_poly = model.predict(X_poly)
+
+        fitted_surface = Z_poly.reshape(m, n)
+        return fitted_surface
+    
+    except Exception as e:
+        logger.error(f"Error in fit_polynomial_surface: {e}")
+        raise
 
 def level_image_polynomial(image, order):
-    """Level the image by subtracting the fitted polynomial surface."""
-    polynomial_surface = fit_polynomial_surface(image, order=order)
-    leveled_image = image - polynomial_surface
-    return leveled_image
+    """
+    Level the image by subtracting the fitted polynomial surface.
+
+    Parameters:
+    - image: 2D numpy array representing the image.
+    - order: Integer specifying the order of the polynomial.
+
+    Returns:
+    - leveled_image: 2D numpy array representing the leveled image.
+    """
+    try:
+        polynomial_surface = fit_polynomial_surface(image, order=order)
+        leveled_image = image - polynomial_surface
+        return leveled_image
+    
+    except Exception as e:
+        logger.error(f"Error in level_image_polynomial: {e}")
+        raise
 
 def PolynomialLeveling(img, order):
-    image = img_as_float(img)
+    """
+    Perform image leveling by fitting and subtracting a polynomial surface.
 
-    # Level the image using polynomial fitting
-    leveled_image = level_image_polynomial(image, order=order)
+    Parameters:
+    - img: 2D numpy array representing the image.
+    - order: Integer specifying the order of the polynomial.
 
-    leveled_image_normalized = cv2.normalize(leveled_image, None, 0, 255, cv2.NORM_MINMAX)
-    leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+    Returns:
+    - leveled_image_normalized: 2D numpy array representing the leveled image.
+    """
+    try:
+        image = img_as_float(img)
 
-    return leveled_image_normalized
+        # Level the image using polynomial fitting
+        leveled_image = level_image_polynomial(image, order=order)
+
+        leveled_image_normalized = cv2.normalize(leveled_image, None, 0, 255, cv2.NORM_MINMAX)
+        leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+
+        return leveled_image_normalized
+    
+    except Exception as e:
+        logger.error(f"Error in PolynomialLeveling: {e}")
+        raise
 
 def AdaptiveLeveling(img, disk_size=50):
-    """Level the image using morphological opening."""
-    selem = disk(disk_size)
-    background = opening(img, selem)
-    leveled_image = img - background
-    leveled_image_normalized = cv2.normalize(leveled_image, None, 0, 255, cv2.NORM_MINMAX)
-    leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
-    return leveled_image_normalized
+    """
+    Perform adaptive leveling using morphological opening.
+
+    Parameters:
+    - img: 2D numpy array representing the image.
+    - disk_size: Integer specifying the size of the morphological structuring element.
+
+    Returns:
+    - leveled_image_normalized: 2D numpy array representing the leveled image.
+    """
+    try:
+        selem = disk(disk_size)
+        background = opening(img, selem)
+        leveled_image = img - background
+        leveled_image_normalized = cv2.normalize(leveled_image, None, 0, 255, cv2.NORM_MINMAX)
+        leveled_image_normalized = leveled_image_normalized.astype(np.uint8)
+        return leveled_image_normalized
+    
+    except Exception as e:
+        logger.error(f"Error in AdaptiveLeveling: {e}")
+        raise

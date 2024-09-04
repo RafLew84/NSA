@@ -5,7 +5,7 @@ Main application module.
 This module defines the main application class and the entry point of the application.
 
 @author
-rlewandkow
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 import os, sys
@@ -37,6 +37,22 @@ class App:
         Args:
             root (tk.Tk): The root Tkinter window.
         """
-        self.root = root
-        self.root.title("NanoSurface Analyzer")
-        MainWindow(self.root)
+        try:
+            self.root = root
+            self.root.title("NEtCAT NanoSurface Analyzer")
+            
+            # Initialize the main window UI
+            MainWindow(self.root)
+            logger.info("Application initialized successfully.")
+        except Exception as e:
+            logger.error(f"Error during application initialization: {e}")
+            raise  # Optionally re-raise the error to halt execution in case of a critical failure
+
+if __name__ == "__main__":
+    # Entry point of the application
+    try:
+        root = tk.Tk()  # Create the main Tkinter window
+        app = App(root)  # Instantiate the App class
+        root.mainloop()  # Start the Tkinter main loop
+    except Exception as e:
+        logger.critical(f"Unhandled exception in the main application: {e}")

@@ -4,7 +4,8 @@ Read .s94 file.
 
 This module contains a function to read data from a .s94 file.
 
-@author: rlewandkow
+@author
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 """ .s94 metadata
@@ -59,6 +60,9 @@ FORMAT_STRING = "<hhhhiffffffhhffffhh"
 NUMBER_OF_BYTES = struct.calcsize(FORMAT_STRING)
 
 logger = logging.getLogger(__name__)
+if not logger.hasHandlers():
+    logging.basicConfig(level=logging.DEBUG,  # Set default logging level to DEBUG
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 def read_s94_file(file_name):
     """
@@ -69,6 +73,10 @@ def read_s94_file(file_name):
 
     Returns:
         dict: A dictionary containing the file name, header information, and data array.
+
+    Raises:
+        ValueError: If the file is invalid or contains incorrect data.
+        FileNotFoundError: If the specified file is not found.
     """
     if not isinstance(file_name, str):
         msg = "read_s94_file: Invalid input. filename must be strings."

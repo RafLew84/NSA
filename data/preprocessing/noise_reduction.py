@@ -3,7 +3,7 @@
 Functions for Noise reduction proccessing
 
 @author
-rlewadkow
+Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 import os, sys
@@ -15,7 +15,10 @@ import cv2
 import logging
 
 
+# Configure logging
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG,  # Set to DEBUG level for detailed logging
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 def NlMeansDenois(img, h=3, searchWinwowSize=21, templateWindowSize=7):
     """
