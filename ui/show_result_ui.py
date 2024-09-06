@@ -26,7 +26,6 @@ def create_show_result_ui(
     checkbox,
     checkbox_color_var,
     result_treeview,
-    delete_button,
     save_button        
 ):
     """
@@ -78,18 +77,15 @@ def create_show_result_ui(
 
         # Create a checkbox and associate it with the IntVar
         checkbox = tk.Checkbutton(result_ui_section, text="Change Color", variable=checkbox_color_var, onvalue=255, offvalue=0)
-        checkbox.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+        checkbox.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
 
         font_settings = ("Helvetica", 12, "bold")
         save_button = tk.Button(result_ui_section, text="SAVE", font=font_settings)
         save_button.grid(row=2, column=0, columnspan=3, padx=5, pady=5, sticky="we")
 
-        delete_button = tk.Button(result_ui_section, text="Delete")
-        delete_button.grid(row=1, column=1, padx=5, pady=5, sticky="we")
-
         result_ui_section.grid_rowconfigure(0, weight=1)  
 
-        return result_ui_section, checkbox_color_var, checkbox, result_treeview, delete_button, save_button
+        return result_ui_section, checkbox_color_var, checkbox, result_treeview, save_button
     
     except Exception as e:
         logger.error(f"Error creating show result UI: {e}")

@@ -284,12 +284,11 @@ class MainWindow(Observer):
             self.navigation_slider
         )
         
-        self.result_ui_section, self.checkbox_color_var, self.checkbox, self.result_treeview, self.delete_button, self.save_button = create_show_result_ui(
+        self.result_ui_section, self.checkbox_color_var, self.checkbox, self.result_treeview, self.save_button = create_show_result_ui(
             self.root,
             self.checkbox,
             self.checkbox_color_var,
             self.result_treeview,
-            self.delete_button,
             self.save_button
         )
 
@@ -307,7 +306,6 @@ class MainWindow(Observer):
         self.checkbox_color_var = tk.IntVar()
         self.checkbox = None
         self.result_treeview = None
-        self.delete_button = None
         self.save_button = None
 
     def setup_navigation_ui_elements(self):
