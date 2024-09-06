@@ -8,7 +8,7 @@
 <body>
     <h1>NanoSurface Analyzer Documentation</h1>
 
-    <p>Welcome to the <strong>NanoSurface Analyzer</strong> application! This documentation will guide you through the key features and usage instructions.</p>
+    <p> <strong>NEtCAT NanoSurface Analyzer</strong> application! This documentation will guide you through the key features and usage instructions.</p>
 
     <h2>Table of Contents</h2>
     <ol>
@@ -30,8 +30,9 @@
     </ol>
 
     <h2 id="introduction">Introduction</h2>
-    <p>The NanoSurface Analyzer is a tool designed to help measure surface data at the nanoscale. The application supports <code>mpp</code>, <code>stp</code>, and <code>s94</code> file formats. It provides several processing and measurement methods.</p>
-    
+    <p><strong>NanoSurface Analyzer</strong> tool is designed for the analysis and measurement of surface data at the nanoscale. This application is developed to support researchers working with surface data by providing tools for reading, processing, and analyzing data.</p>
+    <p>Handles <code>mpp</code>, <code>stp (WSxM)</code>, and <code>s94</code> files, extracting both header information and image data for comprehensive analysis.</p>
+
     <h2 id="installation">Installation</h2>
     <p>To install the NanoSurface Analyzer, follow these steps:</p>
     <ol>
@@ -46,6 +47,15 @@
     </ol>
 
     <h2 id="usage">Usage</h2>
+    <p>Follow these steps to utilize the NanoSurface Analyzer effectively:</p>
+    <ul>
+        <li><strong>Perform Preprocessing:</strong> Start by preparing your images through the preprocessing steps. This is essential for accurate area and nearest neighbor detection.</li>
+        <li><strong>Select Image for Analysis:</strong> The last option in the options list is automatically set as the image for area determination. You can change this by using the "Move for Analysis" button to select a different image if needed.</li>
+        <li><strong>Use Binary Images:</strong> Ensure that only binary images are used for area and nearest neighbor determination. The analysis functions are designed to work specifically with binary images.</li>
+        <li><strong>View Detected Areas:</strong> After the analysis, you can view the image with marked detected areas by using the dropdown menu. Choose either the "Contours" or "WContours" options to visualize the results.</li>
+        <li><strong>Review Detected Data:</strong> The detected data will be displayed in a treeview format, providing a structured view of the analysis results.</li>
+        <li><strong>Save Data:</strong> To save the analysis results, use the "Save" button. The data can be saved in Excel format for further review and reporting.</li>
+    </ul>
 
     <h3 id="file-read">File Reading</h3>
     <p>The application supports the following file formats: <code>s94</code>, <code>stp (WSxM)</code>, and <code>mpp (WSxM)</code>. For <code>s94</code> and <code>stp</code> files, both header information and image data will be extracted. In the case of <code>mpp</code> files, data from each frame will be extracted individually.</p>
@@ -60,16 +70,457 @@
     </ol>
 
     <h3 id="preprocessing">Preprocessing</h3>
-    <p>Steps to preprocess the surface data before analysis.</p>
+    <p>The NanoSurface Analyzer provides the following preprocessing methods:</p>
+    <ul>
+        <li><strong>Intensity:</strong> This preprocessing step involves adjusting the brightness and contrast of the image, typically using techniques like gamma correction and histogram equalization.</li>
+        <ul>
+            <li>
+                <br>
+                <p></p><strong>Adaptive Equalization:</strong> (Contrast Limited Adaptive Histogram Equalization - skimage.exposure.equalize_adapthist) Enhances contrast in small areas of the image, making local details more visible. This method adjusts contrast on a localized basis, which helps in bringing out details that might be lost in standard histogram equalization.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code></li>
+                    <li>clip limit:<code> int</code> - Clipping limit, normalized between 0 and 1 (higher values give more contrast).</li>
+                </ul>
+            </li>
+            <li>
+                <br>
+                <p></p><strong>Contrast Stretching:</strong> (skimage.exposure.rescale_intensity) Expands the range of intensity values in an image to utilize the full spectrum of available intensities. This technique enhances the contrast of the entire image by stretching the histogram, making dark regions darker and bright regions brighter.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> array</code></li>
+                    <li>min:<code> int</code> - Minimum percentile for contrast stretching.</li>
+                    <li>max:<code> int</code> - Maximum percentile for contrast stretching.</li>
+                </ul>
+            </li>
+            <li>
+                <p></p><strong>Gamma Adjustment:</strong> (skimage.exposure.adjust_gamma) Modifies the overall brightness of the image by adjusting the gamma curve. Lowering the gamma value makes shadows more visible, while increasing it can brighten darker areas, effectively balancing the exposure.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code></li>
+                    <li>gamma:<code> float</code> - Non negative real number. Default value is 1.</li>
+                </ul>
+            </li>
+        </ul>
+        <li><p></p><strong>Morphology:</strong> Morphological operations are applied to help to eliminate small noise and refine the shapes of features.</li>
+        <ul>
+            <li>
+                <p></p><strong>Binary Greyscale Erosion:</strong> (scipy.ndimage.grey_erosion) A morphological operation that removes pixels on object boundaries, effectively shrinking objects in a binary image. This method is used to eliminate small noise and separate connected objects, making features in the surface data more defined.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Input:<code> array_like</code></li>
+                    <li>kernel size:<code> int</code> - Shape of a flat and full structuring element used for the grayscale erosion.</li>
+                    <li>kernel type:<code> str</code> - Structuring element used for the grayscale erosion. Available structuring elements: <code>re</code> - rectangle, <code>el</code> - ellipse, <code>cr</code> - cross</li>
+                </ul>
+            </li>
+
+            <li>
+                <p></p><strong>Binary Greyscale Dilation:</strong> (scipy.ndimage.grey_dilation) Opposite to erosion, this operation adds pixels to the boundaries of objects, causing them to grow. It helps in closing small holes within objects and connecting disjointed components, making features more prominent in the binary image.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Input:<code> array_like</code></li>
+                    <li>kernel size:<code> int</code> - Shape of a flat and full structuring element used for the grayscale erosion.</li>
+                    <li>kernel type:<code> str</code> - Structuring element used for the grayscale erosion. Available structuring elements: <code>re</code> - rectangle, <code>el</code> - ellipse, <code>cr</code> - cross</li>
+                </ul>
+            </li>
+            
+            <li>
+                <p></p><strong>Binary Greyscale Opening:</strong> (scipy.ndimage.grey_opening) A combination of erosion followed by dilation. This operation removes small objects or noise while preserving the shape and size of larger objects. It's useful for cleaning up the image by eliminating minor surface irregularities.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Input:<code> array_like</code></li>
+                    <li>kernel size:<code> int</code> - Shape of a flat and full structuring element used for the grayscale erosion.</li>
+                    <li>kernel type:<code> str</code> - Structuring element used for the grayscale erosion. Available structuring elements: <code>re</code> - rectangle, <code>el</code> - ellipse, <code>cr</code> - cross</li>
+                </ul>
+            </li>
+            
+            <li>
+                <p></p><strong>Binary Greyscale Closing:</strong> (scipy.ndimage.grey_closing) A combination of dilation followed by erosion. This operation fills small gaps or holes within objects and smooths the contours, making the features more uniform and connected. It's useful for enhancing surface continuity in the image.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Input:<code> array-like</code></li>
+                    <li>kernel size:<code> int</code> - Shape of a flat and full structuring element used for the grayscale erosion.</li>
+                    <li>kernel type:<code> str</code> - Structuring element used for the grayscale erosion. Available structuring elements: <code>re</code> - rectangle, <code>el</code> - ellipse, <code>cr</code> - cross</li>
+                </ul>
+            </li>
+            
+            <li>
+                <p></p><strong>Propagation:</strong> (skimage.morphology.reconstruction) Expands regions in an image by iteratively applying a morphological operation. This technique is often used for region growing and segmentation, allowing the identification and expansion of specific features or regions of interest on the surface. Implemented using morphological propagation (dilation/erosion) on an image using reconstruction.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code></li>
+                    <li>type:<code> str</code> - Type of propagation (<code>dilation</code> or <code>erosion</code>).</li>
+                    <li>marker value:<code> int</code> - Control parameter for how much of the image is altered during the propagation process</li>
+                </ul>
+            </li>
+            
+            <li>
+                <p></p><strong>White Top-Hat Transformation:</strong> (skimage.morphology.white_tophat) Extracts small bright features from the background by subtracting the result of an opening operation from the original image. This method enhances small, bright details on the surface, making them more prominent for analysis. The white top hat of an image is defined as the image minus its morphological opening
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code></li>
+                    <li>selem type:<code> str</code> - Type of structuring element (<code>disk, square, diamond, star</code>)).</li>
+                    <li>selem size:<code> int</code> - Size of the structuring element.</li>
+                </ul>
+            </li>
+            
+            <li>
+                <p></p><strong>Black Top-Hat Transformation:</strong> (skimage.morphology.black_tophat) Extracts small dark features from the background by subtracting the original image from the result of a closing operation. This technique emphasizes small, dark details on the surface, helping to highlight depressions or pits.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code></li>
+                    <li>selem type:<code> str</code> - Type of structuring element (<code>disk, square, diamond, star</code>)).</li>
+                    <li>selem size:<code> int</code> - Size of the structuring element.</li>
+                </ul>
+            </li>
+        </ul>
+        <li><p></p><strong>Noise Reduction:</strong> Noise reduction techniques aim to eliminate random variations in the data that do not correspond to actual surface features. This can include methods like averaging, median filtering, or more advanced techniques to smooth out the data while preserving important details.</li>
+        <ul>
+            <li>
+                <br>
+                <p></p><strong>Non-Local Means Denoising:</strong> (cv2.fastNlMeansDenoising) Reduces noise in an image while preserving details by comparing the similarity between small patches of pixels throughout the image. This method works well for images with significant noise while maintaining sharp edges and important features.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input image to be denoised.</li>
+                    <li>h:<code> float</code> - Parameter regulating filter strength. Higher values remove more noise but may also eliminate details. Default is 3.</li>
+                    <li>search winwow size:<code> int</code> - Size in pixels of the window used for searching similar patches across the image. Larger values allow distant pixels to influence each other. Default is 21.</li>
+                    <li>template window size:<code> int</code> - Size in pixels of the window used for gathering pixel values. It defines the patch size for comparison. Default is 7.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <li><p></p><strong>Sharpening:</strong> Sharpening enhances the edges of features within the surface data, making them more distinct. This is particularly useful for emphasizing small details that may be blurred due to noise or other preprocessing steps.</li>
+        <ul>
+            <li>
+                <br>
+                <p></p><strong>Gaussian Sharpening:</strong> (skimage.filters.unsharp_mask) Enhances the edges and fine details in an image by subtracting a blurred version of the image from the original and then adding back a scaled version of this difference to the image. This process sharpens the image by emphasizing its high-frequency components.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input image to be sharpened.</li>
+                    <li>radius:<code> float</code> - The radius of the Gaussian blur used in the unsharp mask. Larger values create a stronger blur, making the sharpening effect more pronounced. Default is 1.0.</li>
+                    <li>amount:<code> float</code> - The scaling factor for the sharpening effect. Higher values increase the contrast of edges, making them more defined. Default is 1.0.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <li><p></p><strong>Smoothing:</strong> Smoothing reduces sharp transitions in the data, creating a more gradual variation across the surface. This is often achieved using Gaussian or other filters, which help to reduce high-frequency noise while retaining the overall shape of the data.</li>
+        <ul>
+            <li>
+                <br>
+                <p></p><strong>Gaussian Blur:</strong> (cv2.GaussianBlur) Smooths the image by reducing noise and detail through a Gaussian function, which spreads pixel values to surrounding pixels. This technique is commonly used to soften edges and reduce image noise.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input image to be blurred.</li>
+                    <li>sigmaX:<code> float</code> - The standard deviation of the Gaussian kernel in the X direction. A larger value results in a stronger blur. Must be a positive odd number.</li>
+                    <li>sigmaY:<code> float</code> - The standard deviation of the Gaussian kernel in the Y direction. Like sigmaX, this value controls the strength of the blur. Must be a positive odd number.</li>
+                    <li>border type:<code> int</code> - Border mode used to define the border of the image. Defaults to 0 (reflect border mode).</li>
+                </ul>
+            </li>
+            <li>
+                <br>
+                <p></p><strong>Gaussian Filter:</strong> (scipy.ndimage.gaussian_filter) Applies a Gaussian filter to the image, which smooths the image by reducing noise and details. The Gaussian filter uses a Gaussian function to create a weighted average for each pixel based on its surrounding pixels.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input image to be filtered.</li>
+                    <li>sigma:<code> float</code> - The standard deviation of the Gaussian kernel, controlling the amount of smoothing. A higher sigma value results in a stronger blur. Defaults to 4.</li>
+                </ul>
+            </li>
+            <li>
+                <br>
+                <p></p><strong>Local Median Filter:</strong> (scipy.ndimage.median_filter) The local median filter is applied to smooth the image, particularly useful for reducing noise while preserving edges. It works by replacing each pixel with the median value within a specified window size, which is centered on the pixel.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input image to be filtered.</li>
+                    <li>size:<code> int</code> - The size of the filter window. A larger size will increase the smoothing effect. Defaults to 5.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <li><p></p><strong>Leveling:</strong> Removes any tilt or unevenness in the data by fitting a plane to the surface and subtracting it, ensuring that the analyzed data represents the actual surface topology.</li>
+        <ul>
+            <li>
+                <br>
+                <p></p><strong>Region Leveling:</strong> (custom function) This function performs image leveling by fitting a plane to a selected region of the image and subtracting it from the original image. This process corrects any tilt or non-uniform background, making the surface more uniform for analysis.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input 2D image to be leveled.</li>
+                </ul>
+            </li>
+            <li>
+                <br>
+                <p></p><strong>Three Point Leveling:</strong> (custom function) This function performs image leveling by fitting a plane defined by three user-selected points and subtracting it from the original image. The process helps correct any tilt or non-uniform background, ensuring that the surface is leveled for further analysis.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input 2D image to be leveled.</li>
+                </ul>
+            </li>
+            <li>
+                <br>
+                <p></p><strong>Polynomial Leveling:</strong> (custom function) This function levels the image by fitting and subtracting a polynomial surface. It helps to correct non-uniformities across the image by using polynomial regression to model and remove gradual variations in intensity.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input 2D image to be leveled.</li>
+                    <li>Order:<code> int</code> - The order of the polynomial to be fitted (e.g., 2 for quadratic, 3 for cubic).</li>
+                </ul>
+            </li>
+            <li>
+                <br>
+                <strong>Adaptive Leveling:</strong> (custom function) This function performs adaptive leveling using morphological opening. It helps to remove background variations by applying a morphological operation that smooths out the image based on the local structure.
+                <br>
+                Parameters:
+                <ul>
+                    <li>Image:<code> ndarray</code> - The input 2D image to be leveled.</li>
+                    <li>disk size:<code> int</code> - The size of the morphological structuring element, which controls the extent of the smoothing.</li>
+                </ul>
+            </li>
+        </ul>
+    </ul>
+
+    <p>These preprocessing methods can be applied individually or in combination, depending on the specific requirements of your analysis. The goal is to refine the data to a state where it is ready for accurate measurement and further processing.</p>
+
 
     <h3 id="processing">Processing</h3>
     <p>Processing methods provided by the NanoSurface Analyzer.</p>
+    <ul>
+        <li>
+            <strong>Morphology:</strong> These methods are useful for refining surface features and removing small artifacts.
+            <ul>
+                <li>
+                    <br>
+                    <p></p><strong>Binary Erosion:</strong> (skimage.morphology.binary_erosion) This function returns the same result as grayscale erosion but performs faster for binary images. A morphological operation that removes pixels on object boundaries, effectively shrinking objects in a binary image. This method is used to eliminate small noise and separate connected objects, making features in the surface data more defined.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input image to be filtered.</li>
+                        <li>footprint type:<code> str</code> - The shape of the structural element (<code>disk, square, diamond, star</code>).</li>
+                        <li>footprint size:<code> int</code> - The size of the structural element that determines the extent of erosion.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Binary Dilation:</strong> (skimage.morphology.binary_dilation) This function returns the same result as grayscale dilation but performs faster for binary images. Opposite to erosion, this operation adds pixels to the boundaries of objects, causing them to grow. It helps in closing small holes within objects and connecting disjointed components, making features more prominent in the binary image.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input image to be filtered.</li>
+                        <li>footprint type:<code> str</code> - The shape of the structural element (<code>disk, square, diamond, star</code>).</li>
+                        <li>footprint size:<code> int</code> - The size of the structural element that determines the extent of erosion.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Binary Opening:</strong> (skimage.morphology.binary_opening) This function returns the same result as grayscale opening but performs faster for binary images. A combination of erosion followed by dilation. This operation removes small objects or noise while preserving the shape and size of larger objects. It's useful for cleaning up the image by eliminating minor surface irregularities.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input image to be filtered.</li>
+                        <li>footprint type:<code> str</code> - The shape of the structural element (<code>disk, square, diamond, star</code>).</li>
+                        <li>footprint size:<code> int</code> - The size of the structural element that determines the extent of erosion.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Binary Closing:</strong> (skimage.morphology.binary_closing) This function returns the same result as grayscale opening but performs faster for binary images. A combination of erosion followed by dilation. This operation removes small objects or noise while preserving the shape and size of larger objects. It's useful for cleaning up the image by eliminating minor surface irregularities.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input image to be filtered.</li>
+                        <li>footprint type:<code> str</code> - The shape of the structural element (<code>disk, square, diamond, star</code>).</li>
+                        <li>footprint size:<code> int</code> - The size of the structural element that determines the extent of erosion.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Remove Small Holes:</strong> (skimage.morphology.remove_small_holes) Removes small holes in a binary image, effectively filling in areas below a given size threshold. This method is useful for cleaning up noise and improving the clarity of features in binary surface data.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input binary image from which small holes will be removed.</li>
+                        <li>area threshold:<code> int</code> - The maximum area (in pixels) of holes that should be removed. Holes larger than this threshold will be preserved.</li>
+                        <li>connectivity:<code> int</code> - The connectivity parameter defines the pixel neighborhood for the operation. Typically 1 (4-connectivity) or 2 (8-connectivity).</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Remove Small Objects:</strong> (skimage.morphology.remove_small_objects) Removes small connected components (objects) in a binary image that are smaller than a specified size. This method is useful for cleaning up noise and isolating significant features in surface data.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input binary image from which small objects will be removed.</li>
+                        <li>min_size:<code> int</code> - The minimum size (in pixels) of objects that should be retained. Objects smaller than this threshold will be removed.</li>
+                        <li>connectivity:<code> int</code> - The connectivity parameter defines the pixel neighborhood for the operation. Typically 1 (4-connectivity) or 2 (8-connectivity).</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        
+        <li>
+            <p></p><strong>Thresholding:</strong> Converts grayscale images into binary images by applying a threshold value. This method is useful for separating objects of interest from the background or segmenting specific features.
+            <ul>
+                <li>
+                    <br>
+                    <p></p><strong>Otsu Threshold:</strong> (skimage.filters.threshold_otsu) A global thresholding method that automatically determines the optimal threshold value by maximizing the variance between the foreground and background classes. This method is widely used for binarizing grayscale images.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input grayscale image to be thresholded.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Local Threshold:</strong> (skimage.filters.threshold_local) This method applies adaptive thresholding, where the threshold is calculated for smaller regions of the image, allowing for better segmentation in images with varying lighting conditions. It is particularly useful for unevenly illuminated images.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input grayscale image to be thresholded.</li>
+                        <li>method:<code> str</code> - The method for calculating the local threshold (e.g., <code>e>gaussian</code>).</li>
+                        <li>block size:<code> int</code> - The size of the block used to calculate the threshold.</li>
+                        <li>offset:<code> float</code> - A constant value subtracted from the calculated local threshold.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Niblack Threshold:</strong> (skimage.filters.threshold_niblack) This method applies Niblack's thresholding, which calculates the threshold based on the local mean and standard deviation within a window around each pixel. It's particularly useful for images with varying foreground and background intensities.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input grayscale image to be thresholded.</li>
+                        <li>window size:<code> int</code> - The size of the window used to calculate the local mean.</li>
+                        <li>k:<code> float</code> - A tuning parameter that adjusts the threshold relative to the local mean (positive values raise the threshold, negative values lower it).</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Sauvola Threshold:</strong> (skimage.filters.threshold_sauvola) This method applies Sauvola's thresholding, which adapts the thresholding value based on local mean and standard deviation, with an additional parameter to adjust the dynamic range of the standard deviation. It is effective for images with varying lighting conditions and contrast.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input grayscale image to be thresholded.</li>
+                        <li>window size:<code> int</code> - The size of the window used to calculate the local mean and standard deviation.</li>
+                        <li>k:<code> float</code> - A tuning parameter that adjusts the threshold relative to the local mean and standard deviation (positive values typically raise the threshold).</li>
+                        <li>r:<code> float</code> - The dynamic range of the standard deviation, which scales the standard deviation to enhance or suppress local contrast.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Yen Threshold:</strong> (skimage.filters.threshold_yen) This method applies Yen's thresholding, which calculates the optimal threshold value by maximizing the variance of the background and foreground. It is useful for images with well-separated foreground and background intensity distributions.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input grayscale image to be thresholded.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>ISODATA Threshold:</strong> (skimage.filters.threshold_isodata) This method applies ISODATA thresholding, which determines the optimal threshold by iteratively minimizing the intra-class variance of the background and foreground. It is particularly effective for images with bimodal intensity distributions.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input grayscale image to be thresholded.</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <br>
+                    <p></p><strong>Binary Threshold:</strong> (cv2.threshold) This method applies binary thresholding to an image using a fixed threshold value. Pixels in the image with intensity values above the threshold are set to the maximum value (255), while those below the threshold are set to 0. This technique is useful for separating objects from the background in grayscale images.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input grayscale image to be thresholded.</li>
+                        <li>threshold:<code> int</code> - The fixed threshold value to binarize the image. Pixels with intensity values above this threshold are set to 255, and those below are set to 0.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        
+        <li>
+            <strong>Manual Edit:</strong> Allows users to directly modify the image by manually selecting and editing specific regions. This method is often used for correcting errors or refining specific areas that require detailed attention. Interactive editing is facilitated through matplotlib's `RectangleSelector`, which enables users to select regions of the image and modify them as needed.
+            <ul>
+                <li>
+                    <br>
+                    <p></p><strong>Image Edit Remove:</strong> Removes white areas from the binary image by allowing users to interactively select and edit specific regions.
+                    <br>
+                    Parameters:
+                    <ul>
+                        <li>Image:<code> ndarray</code> - The input binary image.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
 
     <h3 id="measurement">Measurement</h3>
     <p>How to measure surface data using the NanoSurface Analyzer.</p>
+    <ul>
+        <li>
+            <p></p><strong>Area Measurement:</strong> This process calculates the area of each labeled region in a binary image. The area of each region is measured by counting the number of pixels that belong to that region. The function <code>calculate_regions</code> uses the <code>skimage.measure.regionprops</code> to compute the properties of each labeled region, including its area.
+            <br>
+            Parameters:
+            <ul>
+                <li>Image:<code> ndarray</code> - The input binary image with labeled regions.</li>
+            </ul>
+        </li>
+        <li>
+            <p></p><strong>Nearest Neighbor Distance Measurement:</strong> This process calculates the distance between each centroid of labeled regions and its nearest neighbor. The distances are computed using a KDTree for efficient nearest-neighbor queries. The function <code>compute_nearest_neighbor_distances</code> performs this computation and provides distances along with names of the nearest neighbors.
+            <br>
+            Parameters:
+            <ul>
+                <li>Centroids:<code> ndarray</code> - The coordinates of the centroids of the labeled regions.</li>
+                <li>Names:<code> list</code> - The labels or names associated with each centroid.</li>
+            </ul>
+        </li>
+    </ul>
 
     <h3 id="file-write">File Write</h3>
     <p>Instructions for saving the processed data back to a file.</p>
+
+    <ul>
+        <li>
+            <p></p><strong>Saving Images:</strong> This process involves converting and saving images from numpy arrays or PIL Image objects to specified file paths. The <code>save_image</code> function handles the conversion and saving of images, ensuring the correct format (grayscale, RGB, or RGBA) and data type before saving. It supports both numpy arrays and PIL Image objects.
+            <br>
+            Parameters:
+            <ul>
+                <li>Image:<code> numpy.ndarray or PIL.Image.Image</code> - The image to be saved. Can be a numpy array (grayscale or RGB/RGBA) or a PIL Image.</li>
+                <li>Path:<code> str</code> - The file path where the image should be saved.</li>
+            </ul>
+        </li>
+        <li>
+            <p></p><strong>Saving Measured Data:</strong> This process organizes and saves measurement data into an Excel file, including associated images in designated folders. The <code>save_measured_data</code> function creates a directory structure, saves images using <code>save_image</code>, and organizes data into separate sheets in an Excel file for each dataset. This is achieved by interacting with the `DataManager` class to retrieve data for analysis.
+            <br>
+            Parameters:
+            <ul>
+                <li>Base Path:<code> str</code> - The base directory where the data should be saved.</li>
+            </ul>
+        </li>
+    </ul>
 
     <h2 id="about">About</h2>
     <p>The NanoSurface Analyzer is developed to assist in the analysis of nanoscale surface data. The tool is designed to be intuitive and powerful, enabling users to focus on their research rather than on data handling.</p>
@@ -78,8 +529,8 @@
     <h2 id="contact">Contact</h2>
     <p>For any inquiries, suggestions, or feedback, please contact:</p>
     <ul>
-        <li><strong>Email</strong>: yourname@example.com</li>
-        <li><strong>GitHub</strong>: <a href="https://github.com/yourusername/nanosurface-analyzer">https://github.com/yourusername/nanosurface-analyzer</a></li>
+        <li><strong>Email</strong>: rafal.lewandkow2@uwr.edu.pl</li>
+        <li><strong>GitHub</strong>: <a href="https://github.com/RafLew84/NSA">https://github.com/RafLew84/NSA</a></li>
     </ul>
 </body>
 </html>

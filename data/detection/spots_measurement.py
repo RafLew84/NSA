@@ -33,18 +33,6 @@ def calculate_regions(labeled_image):
     regions = measure.regionprops(labeled_image)
     return regions
 
-# def create_color_image(labeled_image):
-#     # Create a color map with distinct colors
-#     color_image = label2rgb(labeled_image, bg_label=0)
-#     color_image = (color_image * 255).astype(np.uint8)  # Convert to 8-bit color
-#     return color_image
-
-# def compute_nearest_neighbor_distances(centroids):
-#     tree = KDTree(centroids)
-#     distances, _ = tree.query(centroids, k=2)  # k=2 because the first neighbor is the point itself
-#     nearest_neighbor_distances = distances[:, 1]  # The second column contains the nearest neighbor distances
-#     return nearest_neighbor_distances
-
 def compute_nearest_neighbor_distances(centroids, names):
     tree = KDTree(centroids)
     distances, indices = tree.query(centroids, k=2)  # k=2 because the first neighbor is the point itself
@@ -95,48 +83,8 @@ def analyze_images(images, threshold=5):
         nearest_neighbor_distances, nearest_neighbor_name = compute_nearest_neighbor_distances(centroids, labels_names)
         nearest_neighbor_distances_list.append(nearest_neighbor_distances)
         nearest_neighbor_names.append(nearest_neighbor_name)
-        
-        # if frame_index == 0:
-        #     for i, (centroid, area) in enumerate(zip(centroids, areas)):
-        #         spot_tracks[i].append((frame_index, centroid, area))
-        # else:
-        #     previous_centroids = all_centroids[frame_index - 1]
-        #     matched_indices, new_spots = track_spots(previous_centroids, centroids, threshold)
-            
-        #     for current_idx, prev_idx in matched_indices:
-        #         spot_tracks[prev_idx].append((frame_index, centroids[current_idx], areas[current_idx]))
-            
-        #     max_existing_index = max(spot_tracks.keys()) if spot_tracks else -1
-        #     for i, spot_idx in enumerate(new_spots):
-        #         new_spot_index = max_existing_index + 1 + i
-        #         spot_tracks[new_spot_index].append((frame_index, centroids[spot_idx], areas[spot_idx]))
-    
+
     return all_centroids, all_areas, all_labels_names, nearest_neighbor_distances_list, nearest_neighbor_names, labeled_images, all_labels_num
-
-# def overlay_labels_on_original(original_images, labeled_images):
-#     labeled_overlays = []
-#     for original_image, labeled_image in zip(original_images, labeled_images):
-#         overlay = original_image.copy()
-#         contours = measure.find_contours(labeled_image, 0.5)
-#         for contour in contours:
-#             for point in contour:
-#                 overlay[int(point[0]), int(point[1])] = 255  # Marking contour points as white
-#         labeled_overlays.append(overlay)
-#     return labeled_overlays
-
-# def overlay_labels_on_original(original_images, labeled_images):
-#     labeled_overlays = []
-#     for original_image, labeled_image in zip(original_images, labeled_images):
-#         overlay = original_image.copy()
-        
-#         # Perform Canny edge detection on the labeled image
-#         edges = feature.canny(labeled_image > 0.5)  # Canny edge detector expects a binary image
-        
-#         # Overlay edges on the original image
-#         overlay[edges] = 255  # Marking edge points as white
-        
-#         labeled_overlays.append(overlay)
-#     return labeled_overlays
 
 def overlay_labels_on_original(original_images, labeled_images, label_names, centroids, color='black'):
     labeled_overlays = []
