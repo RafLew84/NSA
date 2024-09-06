@@ -22,13 +22,9 @@ from data.preprocessing.preprocessing_operations import (
     perform_gaussian_filter,
     perform_non_local_denoising,
     perform_erosion,
-    perform_gaussian_greyscale_erosion,
     perform_binary_greyscale_erosion,
     perform_binary_greyscale_dilation,
-    perform_gaussian_greyscale_dilation,
     perform_binary_greyscale_opening,
-    perform_gaussian_greyscale_opening,
-    perform_gaussian_greyscale_closing,
     perform_binary_greyscale_closing,
     perform_gamma_adjustment,
     perform_contrast_stretching,
@@ -145,37 +141,16 @@ options_config = {
         "label_text": "Kernel Size",
         "slider_config": {"from_": 3, "to": 21, "resolution": 1, "value": preprocess_params["Binary Greyscale Erosion"]["kernel_size"]}
     },
-    # "Gaussian Greyscale Erosion": {
-    #     "labels": [("Mask Size", preprocess_params["Gaussian Greyscale Erosion"]["mask_size"]), ("Sigma", preprocess_params["Gaussian Greyscale Erosion"]["sigma"])],
-    #     "sliders": [
-    #         {"from_": 3, "to": 21, "resolution": 1, "value": preprocess_params["Gaussian Greyscale Erosion"]["mask_size"]},
-    #         {"from_": 0.1, "to": 10, "resolution": 0.05, "value": preprocess_params["Gaussian Greyscale Erosion"]["sigma"]}
-    #     ]
-    # },
     "Binary Greyscale Dilation": {
         "radio_buttons": [("Rectangle", "re"), ("Ellipse", "el"), ("Cross", "cr")],
         "label_text": "Kernel Size",
         "slider_config": {"from_": 3, "to": 21, "resolution": 1, "value": preprocess_params["Binary Greyscale Dilation"]["kernel_size"]}
     },
-    # "Gaussian Greyscale Dilation": {
-    #     "labels": [("Mask Size", preprocess_params["Gaussian Greyscale Dilation"]["mask_size"]), ("Sigma", preprocess_params["Gaussian Greyscale Dilation"]["sigma"])],
-    #     "sliders": [
-    #         {"from_": 3, "to": 21, "resolution": 1, "value": preprocess_params["Gaussian Greyscale Dilation"]["mask_size"]},
-    #         {"from_": 0.1, "to": 10, "resolution": 0.05, "value": preprocess_params["Gaussian Greyscale Dilation"]["sigma"]}
-    #     ]
-    # },
     "Binary Greyscale Opening": {
         "radio_buttons": [("Rectangle", "re"), ("Ellipse", "el"), ("Cross", "cr")],
         "label_text": "Kernel Size",
         "slider_config": {"from_": 3, "to": 21, "resolution": 1, "value": preprocess_params["Binary Greyscale Opening"]["kernel_size"]}
     },
-    # "Gaussian Greyscale Opening": {
-    #     "labels": [("Mask Size", preprocess_params["Gaussian Greyscale Opening"]["mask_size"]), ("Sigma", preprocess_params["Gaussian Greyscale Opening"]["sigma"])],
-    #     "sliders": [
-    #         {"from_": 3, "to": 21, "resolution": 1, "value": preprocess_params["Gaussian Greyscale Opening"]["mask_size"]},
-    #         {"from_": 0.1, "to": 10, "resolution": 0.05, "value": preprocess_params["Gaussian Greyscale Opening"]["sigma"]}
-    #     ]
-    # },
     "Binary Greyscale Closing": {
         "radio_buttons": [("Rectangle", "re"), ("Ellipse", "el"), ("Cross", "cr")],
         "label_text": "Kernel Size",
@@ -191,13 +166,6 @@ options_config = {
         "label_text": "Selem Size",
         "slider_config": {"from_": 2, "to": 30, "resolution": 1, "value": preprocess_params["Black Top Hat"]["selem_size"]}
     },
-    # "Gaussian Greyscale Closing": {
-    #     "labels": [("Mask Size", preprocess_params["Gaussian Greyscale Closing"]["mask_size"]), ("Sigma", preprocess_params["Gaussian Greyscale Closing"]["sigma"])],
-    #     "sliders": [
-    #         {"from_": 3, "to": 21, "resolution": 1, "value": preprocess_params["Gaussian Greyscale Closing"]["mask_size"]},
-    #         {"from_": 0.1, "to": 10, "resolution": 0.05, "value": preprocess_params["Gaussian Greyscale Closing"]["sigma"]}
-    #     ]
-    # },
     "Gaussian Sharpening": {
         "labels": [("Radius", preprocess_params["Gaussian Sharpening"]["radius"]), ("Amount", preprocess_params["Gaussian Sharpening"]["amount"])],
         "sliders": [
@@ -284,13 +252,9 @@ preprocess_operations = {
     "GaussianFilter": perform_gaussian_filter,
     "Erosion": perform_erosion,
     "Binary Greyscale Erosion": perform_binary_greyscale_erosion,
-    # "Gaussian Greyscale Erosion": perform_gaussian_greyscale_erosion,
     "Binary Greyscale Dilation": perform_binary_greyscale_dilation,
-    # "Gaussian Greyscale Dilation": perform_gaussian_greyscale_dilation,
     "Binary Greyscale Opening": perform_binary_greyscale_opening,
-    # "Gaussian Greyscale Opening": perform_gaussian_greyscale_opening,
     "Binary Greyscale Closing": perform_binary_greyscale_closing,
-    # "Gaussian Greyscale Closing": perform_gaussian_greyscale_closing,
     "Gamma Adjustment": perform_gamma_adjustment,
     "Contrast Stretching": perform_contrast_stretching,
     "Adaptive Equalization": perform_adaptive_equalization,

@@ -17,7 +17,6 @@ import cv2
 from skimage.filters import (
     threshold_otsu,
     threshold_local,
-    threshold_multiotsu,
     threshold_niblack, 
     threshold_sauvola,
     threshold_yen,

@@ -9,11 +9,9 @@ Author: Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)
 """
 
 import os, sys
-import numpy as np
 
 sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 
-import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import RectangleSelector
 

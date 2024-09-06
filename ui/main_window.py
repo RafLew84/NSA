@@ -17,12 +17,9 @@ sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 
 import tkinter as tk
 
-from tkinter import ttk
 from tkinter import filedialog, messagebox
 
 import numpy as np
-
-from tkinterweb import HtmlFrame 
 
 from data.observer.observer import Observer
 from data.data_manager import DataManager

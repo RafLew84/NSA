@@ -14,8 +14,6 @@ sys.path.insert(1, "/".join(os.path.realpath(__file__).split("/")[0:-2]))
 
 import tkinter as tk
 
-from tkinter import ttk
-
 from ui.main_window import MainWindow
 
 import logging

@@ -39,17 +39,11 @@ preprocess_params = {
         "kernel_type": "re",  # Type of kernel (rectangular).
         "kernel_size": 3      # Size of the kernel for binary greyscale erosion.
     },
-    
-    # Gaussian Greyscale Erosion parameters can be added as needed.
-    # "Gaussian Greyscale Erosion": {"mask_size": 3, "sigma": 1.0},
 
     "Binary Greyscale Dilation": {
         "kernel_type": "re",  # Type of kernel (rectangular).
         "kernel_size": 3      # Size of the kernel for binary greyscale dilation.
     },
-    
-    # Gaussian Greyscale Dilation parameters can be added as needed.
-    # "Gaussian Greyscale Dilation": {"mask_size": 3, "sigma": 1.0},
 
     "Binary Greyscale Opening": {
         "kernel_type": "re",  # Type of kernel (rectangular).
@@ -63,9 +57,6 @@ preprocess_params = {
         "kernel_type": "re",  # Type of kernel (rectangular).
         "kernel_size": 3      # Size of the kernel for binary greyscale closing.
     },
-    
-    # Gaussian Greyscale Closing parameters can be added as needed.
-    # "Gaussian Greyscale Closing": {"mask_size": 3, "sigma": 1.0},
 
     "Gamma Adjustment": {"gamma": 3.5},  # Gamma correction with specified gamma value.
     
