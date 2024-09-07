@@ -1,4 +1,9 @@
 numpy
-matplotlib
+tkinter
 tkinterweb
-markdown
+pandas
+scipy
+matplotlib
+scikit-image
+scikit-learn
+pillow
