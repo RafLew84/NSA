@@ -129,10 +129,10 @@ def show_docs(root):
     docs_window.title("Documentation")
 
     # Create an HtmlFrame widget to display the HTML content
-    html_frame = HtmlFrame(docs_window, messages_enabled = True)
+    html_frame = HtmlFrame(docs_window, messages_enabled = False)
     html_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-    with open("NSA/docs/docs.html", "r") as file:
+    with open("docs/docs.html", "r") as file:
         md_content = file.read()
 
     html_content = markdown.markdown(md_content)
