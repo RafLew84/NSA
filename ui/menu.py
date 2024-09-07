@@ -115,7 +115,7 @@ def show_about():
     """
     Show information about the application.
     """
-    messagebox.showinfo("About NanoSurface Analyzer", "NEtCAT NanoSurface Analyzer v1.0\nDeveloped by Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)\n netcat.uwr.edu.pl")
+    messagebox.showinfo("About NanoSurface Analyzer", "NEtCAT NanoSurface Analyzer v1.0\n\nDeveloped by Rafał Lewandków (rafal.lewandkow2@uwr.edu.pl)\n netcat.uwr.edu.pl")
 
 def show_docs(root):
     """
